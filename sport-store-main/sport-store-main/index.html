@@ -1,0 +1,221 @@
+<!-- index.html được cập nhật theo giao diện bạn cung cấp với Tailwind CSS -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cửa hàng thể thao</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>body { font-family: 'Montserrat', sans-serif; }</style>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 grid grid-cols-1 md:grid-cols-3 items-center gap-4">
+  <div class="flex items-center">
+    <i class="fas fa-running text-2xl text-blue-600 mr-2"></i>
+    <h1 class="text-xl font-bold text-gray-800">SPORT STORE</h1>
+  </div>
+  <div>
+    <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+  </div>
+  <div class="flex justify-end gap-4 items-center">
+    <select id="filterSelect" class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <option value="">Lọc theo loại sản phẩm</option>
+      <option value="giày">Giày</option>
+      <option value="áo">Áo</option>
+      <option value="balo">Balo</option>
+      <option value="bóng">Bóng</option>
+    </select>
+    <a href="#" class="text-gray-800 hover:text-blue-600"><i class="fas fa-search"></i></a>
+    <a href="#" class="text-gray-800 hover:text-blue-600"><i class="fas fa-user"></i></a>
+    <a href="cart.html" class="text-gray-800 hover:text-blue-600 relative">
+      <i class="fas fa-shopping-cart"></i>
+      <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+    </a>
+  </div>
+  
+</div>
+
+
+    <!-- Hero Section -->
+    <section class="bg-blue-600 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-4">Thể thao - Sức khỏe - Đam mê</h2>
+            <p class="text-xl mb-8">Khám phá bộ sưu tập dụng cụ thể thao chất lượng cao</p>
+            <button class="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition duration-300">Mua ngay</button>
+        </div>
+    </section>
+
+    <!-- Sản phẩm nổi bật -->
+    <section class="py-12 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold mb-8 text-center">Sản phẩm nổi bật</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <!-- Bóng rổ Spalding -->
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+            <div class="relative">
+              <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=500&q=60" alt="Bóng rổ" class="w-full h-64 object-cover">
+            </div>
+            <div class="p-4">
+              <h3 class="font-semibold text-lg mb-2">Bóng rổ Spalding</h3>
+              <div class="flex items-center mb-2">
+                <div class="flex text-yellow-400">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="far fa-star"></i>
+                </div>
+                <span class="text-gray-600 text-sm ml-2">(18 đánh giá)</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-red-500 font-bold">1.200.000đ</span>
+                <button onclick='addToCart({ id: 2, name: "Bóng rổ Spalding", price: 1200000 })' class="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700">
+                  <i class="fas fa-shopping-cart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          
+
+<!-- Áo thể thao Nike Pro -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+  <div class="relative">
+    <img src="https://halisport.com/wp-content/uploads/2023/08/ao-the-thao-nike-nam-den-CJ5333-010-tai-hali-sport.jpg" alt="Áo thể thao Nike" class="w-full h-64 object-cover">
+  </div>
+  <div class="p-4">
+    <h3 class="font-semibold text-lg mb-2">Áo thể thao Nike Pro</h3>
+    <div class="flex items-center mb-2">
+      <div class="flex text-yellow-400">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star-half-alt"></i>
+        <i class="far fa-star"></i>
+      </div>
+      <span class="text-gray-600 text-sm ml-2">(12 đánh giá)</span>
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-red-500 font-bold">950.000đ</span>
+      <button onclick='addToCart({ id: 5, name: "Áo thể thao Nike Pro", price: 950000 })' class="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700">
+        <i class="fas fa-shopping-cart"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Balo thể thao Adidas -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+  <div class="relative">
+    <img src="https://assets.adidas.com/images/w_600,f_auto,q_auto/fa0a10953ed041a7b395afc400c58eb5_9366/Ba_Lo_Adicolor_DJen_IJ0761.jpg" alt="Balo thể thao Adidas" class="w-full h-64 object-cover">
+  </div>
+  <div class="p-4">
+    <h3 class="font-semibold text-lg mb-2">Balo thể thao Adidas</h3>
+    <div class="flex items-center mb-2">
+      <div class="flex text-yellow-400">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="far fa-star"></i>
+        <i class="far fa-star"></i>
+      </div>
+      <span class="text-gray-600 text-sm ml-2">(9 đánh giá)</span>
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-red-500 font-bold">650.000đ</span>
+      <button onclick='addToCart({ id: 6, name: "Balo thể thao Adidas", price: 650000 })' class="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700">
+        <i class="fas fa-shopping-cart"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Giày đá bóng F50 304 -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+  <div class="relative">
+    <img src="https://www.ypsoccer.net/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/a/d/adidas-f50-elite-laceless-fg-lamine-yamal-304-pink-purple-glow-pink-5.jpg" alt="Giày đá bóng F50 304" class="w-full h-64 object-cover">
+  </div>
+  <div class="p-4">
+    <h3 class="font-semibold text-lg mb-2">Giày đá bóng F50 304</h3>
+    <div class="flex items-center mb-2">
+      <div class="flex text-yellow-400">
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="fas fa-star"></i>
+        <i class="far fa-star"></i>
+      </div>
+      <span class="text-gray-600 text-sm ml-2">(15 đánh giá)</span>
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-red-500 font-bold">1.800.000đ</span>
+      <button onclick='addToCart({ id: 8, name: "Giày đá bóng F50 304", price: 1800000 })' class="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700">
+        <i class="fas fa-shopping-cart"></i>
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+          </div>
+        </div>
+
+    <!-- Footer giữ nguyên -->
+
+    <!-- Thêm script giỏ hàng -->
+    <script>
+      function addToCart(product) {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const index = cart.findIndex(item => item.id === product.id);
+        if (index !== -1) {
+          cart[index].quantity += 1;
+        } else {
+          cart.push({ ...product, quantity: 1 });
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+        alert(`Đã thêm ${product.name} vào giỏ hàng!`);
+      }
+
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const badge = document.getElementById('cart-count');
+        if (badge) badge.textContent = totalQty;
+      }
+
+      document.addEventListener('DOMContentLoaded', updateCartCount);
+      // Tìm kiếm sản phẩm
+  document.getElementById('searchInput').addEventListener('input', function (e) {
+    const keyword = e.target.value.toLowerCase();
+    const products = document.querySelectorAll('section .grid > div');
+    products.forEach(product => {
+      const name = product.querySelector('h3')?.textContent?.toLowerCase() || '';
+      product.style.display = name.includes(keyword) ? 'block' : 'none';
+    });
+  });
+
+  // Lọc sản phẩm theo loại
+  document.getElementById('filterSelect').addEventListener('change', function (e) {
+    const keyword = e.target.value.toLowerCase();
+    const products = document.querySelectorAll('section .grid > div');
+    products.forEach(product => {
+      const name = product.querySelector('h3')?.textContent?.toLowerCase() || '';
+      if (!keyword || name.includes(keyword)) {
+        product.style.display = 'block';
+      } else {
+        product.style.display = 'none';
+      }
+    });
+  });
+</script>
+</body>
+</html>

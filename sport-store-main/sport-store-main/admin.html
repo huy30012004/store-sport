@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - Sport Store</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-white shadow-md flex-shrink-0">
+      <div class="p-6">
+        <h2 class="text-2xl font-bold text-blue-600">SPORT STORE</h2>
+      </div>
+      <nav class="mt-6 flex flex-col">
+        <a href="#" class="nav-link flex items-center px-6 py-3 text-gray-700 hover:bg-blue-100" data-target="products">
+          <span class="material-icons mr-3">inventory_2</span>Sản phẩm
+        </a>
+        <a href="#" class="nav-link flex items-center px-6 py-3 text-gray-700 hover:bg-blue-100" data-target="orders">
+          <span class="material-icons mr-3">receipt_long</span>Đơn hàng
+        </a>
+        <a href="#" class="nav-link flex items-center px-6 py-3 text-gray-700 hover:bg-blue-100" data-target="revenue">
+          <span class="material-icons mr-3">insights</span>Doanh thu
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="bg-white shadow-md flex items-center justify-between px-6 py-4">
+        <div class="flex items-center">
+          <h1 class="text-2xl font-semibold">Dashboard</h1>
+        </div>
+        <div class="flex items-center">
+          <span class="text-gray-700 mr-4">Admin</span>
+          <img src="https://i.imgur.com/T90hm02.jpeg" alt="Avatar" class="rounded-full w-8 h-8" />
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="p-6 overflow-auto flex-1">
+        <!-- Products Section -->
+        <section id="products" class="tab-content hidden">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
+              <h3 class="text-lg font-semibold text-gray-700">Tổng sản phẩm</h3>
+              <p id="statProducts" class="text-3xl font-bold text-blue-600">0</p>
+            </div>
+          </div>
+          <!-- Form thêm sản phẩm -->
+          <div class="bg-white rounded shadow p-4 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Thêm sản phẩm mới</h2>
+            <form id="addForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <input type="text" id="newName" placeholder="Tên sản phẩm" class="border p-2 rounded" required />
+              <input type="number" id="newPrice" placeholder="Giá (VND)" class="border p-2 rounded" required />
+              <input type="number" id="newStock" placeholder="Tồn kho" class="border p-2 rounded" required />
+              <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Thêm</button>
+            </form>
+          </div>
+          <div class="bg-white rounded shadow p-4 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Danh sách sản phẩm</h2>
+            <div class="overflow-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">ID</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tên</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Giá</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tồn kho</th>
+                    <th class="px-4 py-2 text-sm font-medium text-gray-700">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody id="productTable" class="bg-white divide-y divide-gray-200"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Orders Section Section remains unchanged -->
+        <section id="orders" class="tab-content hidden">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
+              <h3 class="text-lg font-semibold text-gray-700">Đơn hàng mới</h3>
+              <p id="statOrders" class="text-3xl font-bold text-green-600">0</p>
+            </div>
+          </div>
+          <div class="bg-white rounded shadow p-4 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Danh sách đơn hàng</h2>
+            <div class="overflow-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Mã đơn</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Khách hàng</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tổng tiền</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Ngày</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTable" class="bg-white divide-y divide-gray-200"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Revenue Section remains unchanged -->
+        <section id="revenue" class="tab-content hidden">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
+              <h3 class="text-lg font-semibold text-gray-700">Doanh thu</h3>
+              <p id="statRevenue" class="text-3xl font-bold text-red-600">0đ</p>
+            </div>
+          </div>
+          <div class="bg-white rounded shadow p-4">
+            <h2 class="text-xl font-semibold mb-4">Biểu đồ doanh thu</h2>
+            <canvas id="revenueChart" class="w-full h-64"></canvas>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+  <script>
+    const apiBase = 'http://localhost:5000/api';
+    // Sidebar navigation
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
+        document.getElementById(link.dataset.target).classList.remove('hidden');
+        if (link.dataset.target === 'products') fetchProducts();
+        if (link.dataset.target === 'orders') fetchOrders();
+        if (link.dataset.target === 'revenue') fetchRevenue();
+      });
+    });
+    // Initial view
+    document.querySelector('.nav-link[data-target="products"]').click();
+
+    // Fetch stats
+    async function fetchStats() {
+      const [proRes, ordRes] = await Promise.all([
+        fetch(`${apiBase}/products`), fetch(`${apiBase}/orders`)
+      ]);
+      const products = await proRes.json();
+      const orders = await ordRes.json();
+      document.getElementById('statProducts').textContent = products.length;
+      const newOrders = orders.filter(o => new Date(o.created_at).toDateString() === new Date().toDateString());
+      document.getElementById('statOrders').textContent = newOrders.length;
+      const revenue = orders.reduce((sum,o) => sum + o.total, 0);
+      document.getElementById('statRevenue').textContent = revenue.toLocaleString('vi-VN') + 'đ';
+    }
+
+    // Products CRUD
+    async function fetchProducts() {
+      await fetchStats();
+      const res = await fetch(`${apiBase}/products`);
+      const products = await res.json();
+      const tbody = document.getElementById('productTable'); tbody.innerHTML = '';
+      products.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.className = '';
+        tr.innerHTML = `
+          <td class="px-4 py-2 text-sm text-gray-700">${p.id}</td>
+          <td class="px-4 py-2 text-sm text-gray-700">${p.name}</td>
+          <td class="px-4 py-2 text-sm text-gray-700">${p.price.toLocaleString()}đ</td>
+          <td class="px-4 py-2 text-sm text-gray-700">${p.stock}</td>
+          <td class="px-4 py-2 text-sm text-gray-700">
+            <button onclick="showEditForm(${p.id}, '${p.name}', ${p.price}, ${p.stock})" class="text-blue-600 mr-2">📝</button>
+            <button onclick="deleteProduct(${p.id})" class="text-red-600">🗑️</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Add product
+    document.getElementById('addForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = document.getElementById('newName').value;
+      const price = +document.getElementById('newPrice').value;
+      const stock = +document.getElementById('newStock').value;
+      await fetch(`${apiBase}/products`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name, price, stock }) });
+      e.target.reset(); fetchProducts();
+    });
+
+    // Edit form show
+    function showEditForm(id, name, price, stock) {
+      const nameInput = prompt('Tên sản phẩm:', name);
+      const priceInput = prompt('Giá (VND):', price);
+      const stockInput = prompt('Tồn kho:', stock);
+      if (nameInput != null && priceInput != null && stockInput != null) {
+        updateProduct(id, nameInput, +priceInput, +stockInput);
+      }
+    }
+
+    // Update product
+    async function updateProduct(id, name, price, stock) {
+      await fetch(`${apiBase}/products/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name, price, stock }) });
+      fetchProducts();
+    }
+
+    // Delete product
+    async function deleteProduct(id) {
+      if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
+        await fetch(`${apiBase}/products/${id}`, { method: 'DELETE' });
+        fetchProducts();
+      }
+    }
+
+    // Orders
+    async function fetchOrders() {
+      await fetchStats();
+      const res = await fetch(`${apiBase}/orders`);
+      const orders = await res.json();
+      const tbody = document.getElementById('ordersTable'); tbody.innerHTML = '';
+      orders.forEach(o => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-4 py-2 text-sm text-gray-700">#${o.id}</td>
+          <td class="px-4 py-2 text-sm text-gray-700">${o.customer}</td>
+          <td class="px-4 py-2 text-sm text-gray-700">${o.total.toLocaleString()}đ</td>
+          <td class="px-4 py-2 text-sm text-gray-700">${new Date(o.created_at).toLocaleString()}</td>
+        `; tbody.appendChild(tr);
+      });
+    }
+
+    // Revenue
+    async function fetchRevenue() {
+      await fetchStats();
+      const res = await fetch(`${apiBase}/orders`);
+      const orders = await res.json();
+      const labels = orders.map(o => new Date(o.created_at).toLocaleDateString());
+      const data = orders.map(o => o.total);
+      new Chart(document.getElementById('revenueChart'), { type: 'line', data: { labels, datasets: [{ label: 'Doanh thu', data }] }, options: { responsive: true } });
+    }
+  </script>
+</body>
+</html>
