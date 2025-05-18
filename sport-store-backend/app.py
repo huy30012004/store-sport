@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json, os
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -64,6 +65,7 @@ def create_order():
     data = load_data()
     new_order = request.get_json()
     new_order['id'] = len(data['orders']) + 1
+    new_order['created_at'] = datetime.now().isoformat()  # Thêm thời gian tạo
     data['orders'].append(new_order)
     save_data(data)
     return jsonify({'message': 'Đơn hàng đã được lưu'}), 200
