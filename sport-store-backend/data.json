@@ -1,1 +1,48 @@
-{"products": [{"name": "gi\u00e0y", "price": 1700000, "stock": 5, "id": 1}], "orders": []}
+{
+  "products": [
+    {
+      "name": "gi\u00e0y",
+      "price": 1700000,
+      "stock": 5,
+      "id": 1
+    }
+  ],
+  "orders": [
+    {
+      "items": [
+        {
+          "id": 8,
+          "name": "Gi\u00e0y \u0111\u00e1 b\u00f3ng F50 304",
+          "price": 1800000,
+          "quantity": 1
+        }
+      ],
+      "total": 1800000,
+      "id": 1
+    },
+    {
+      "items": [
+        {
+          "id": 8,
+          "name": "Gi\u00e0y \u0111\u00e1 b\u00f3ng F50 304",
+          "price": 1800000,
+          "quantity": 1
+        }
+      ],
+      "total": 1800000,
+      "id": 2
+    },
+    {
+      "items": [
+        {
+          "id": 8,
+          "name": "Gi\u00e0y \u0111\u00e1 b\u00f3ng F50 304",
+          "price": 1800000,
+          "quantity": 1
+        }
+      ],
+      "total": 1800000,
+      "id": 3
+    }
+  ]
+}

@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json, os
@@ -17,7 +16,9 @@ def load_data():
 
 def save_data(data):
     with open(DATA_FILE, 'w') as f:
-        json.dump(data, f)
+        json.dump(data, f, indent=2)
+
+# --- PRODUCT ENDPOINTS ---
 
 @app.route('/api/products', methods=['GET'])
 def get_products():
@@ -51,10 +52,22 @@ def delete_product(pid):
     save_data(data)
     return jsonify({'message': 'Deleted'})
 
+# --- ORDER ENDPOINTS ---
+
 @app.route('/api/orders', methods=['GET'])
 def get_orders():
     data = load_data()
     return jsonify(data['orders'])
 
+@app.route('/api/orders', methods=['POST'])
+def create_order():
+    data = load_data()
+    new_order = request.get_json()
+    new_order['id'] = len(data['orders']) + 1
+    data['orders'].append(new_order)
+    save_data(data)
+    return jsonify({'message': 'Đơn hàng đã được lưu'}), 200
+
+# --- RUN APP ---
 if __name__ == '__main__':
     app.run(debug=True)
