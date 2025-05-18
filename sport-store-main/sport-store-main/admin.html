@@ -7,9 +7,24 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 </head>
 <body class="bg-gray-100 font-sans">
-  <div class="flex h-screen">
+  <!-- Login Form -->
+  <div id="login-page" class="flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
+      <h2 class="text-2xl font-semibold mb-4">Đăng nhập Admin</h2>
+      <input id="email" type="email" placeholder="Email" class="w-full mb-3 p-2 border rounded" />
+      <input id="password" type="password" placeholder="Mật khẩu" class="w-full mb-4 p-2 border rounded" />
+      <button id="login-btn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Đăng nhập</button>
+      <p id="login-error" class="mt-2 text-red-500 text-sm hidden"></p>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="hidden flex h-screen">
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-white shadow-md flex-shrink-0">
       <div class="p-6">
@@ -32,12 +47,10 @@
     <div class="flex-1 flex flex-col">
       <!-- Header -->
       <header class="bg-white shadow-md flex items-center justify-between px-6 py-4">
-        <div class="flex items-center">
-          <h1 class="text-2xl font-semibold">Dashboard</h1>
-        </div>
-        <div class="flex items-center">
-          <span class="text-gray-700 mr-4">Admin</span>
-          <img src="https://i.imgur.com/T90hm02.jpeg" alt="Avatar" class="rounded-full w-8 h-8" />
+        <h1 class="text-2xl font-semibold">Dashboard</h1>
+        <div class="flex items-center space-x-4">
+          <span id="admin-email" class="text-gray-700"></span>
+          <button id="logout-btn" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Đăng xuất</button>
         </div>
       </header>
 
@@ -51,7 +64,6 @@
               <p id="statProducts" class="text-3xl font-bold text-blue-600">0</p>
             </div>
           </div>
-          <!-- Form thêm sản phẩm -->
           <div class="bg-white rounded shadow p-4 mb-6">
             <h2 class="text-xl font-semibold mb-4">Thêm sản phẩm mới</h2>
             <form id="addForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -80,7 +92,7 @@
           </div>
         </section>
 
-        <!-- Orders Section Section remains unchanged -->
+        <!-- Orders Section -->
         <section id="orders" class="tab-content hidden">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
@@ -106,7 +118,7 @@
           </div>
         </section>
 
-        <!-- Revenue Section remains unchanged -->
+        <!-- Revenue Section -->
         <section id="revenue" class="tab-content hidden">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
@@ -125,22 +137,68 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
   <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCb-v3LpPCddGtVjscSmvxpGMIxUgOMGsU",
+      authDomain: "sport-store-be305.firebaseapp.com",
+      projectId: "sport-store-be305",
+      storageBucket: "sport-store-be305.appspot.com",
+      messagingSenderId: "836462598975",
+      appId: "1:836462598975:web:e45aabacb3ea521351118a"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const adminEmails = ['admin@sportstore.com'];
+
+    // Elements
+    const loginPage = document.getElementById('login-page');
+    const dashboard = document.getElementById('dashboard');
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const loginError = document.getElementById('login-error');
+    const adminEmail = document.getElementById('admin-email');
+
+    // Auth state
+    auth.onAuthStateChanged(user => {
+      if (user && adminEmails.includes(user.email)) {
+        loginPage.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+        adminEmail.textContent = user.email;
+        document.querySelector('.nav-link[data-target="products"]').click();
+      } else {
+        if (user) auth.signOut();
+        loginPage.classList.remove('hidden');
+        dashboard.classList.add('hidden');
+      }
+    });
+
+    // Login handler
+    loginBtn.onclick = () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      auth.signInWithEmailAndPassword(email, password)
+        .catch(err => {
+          loginError.textContent = err.message;
+          loginError.classList.remove('hidden');
+        });
+    };
+
+    // Logout
+    logoutBtn.onclick = () => auth.signOut();
+
+    // Dashboard functions
     const apiBase = 'http://localhost:5000/api';
-    // Sidebar navigation
     document.querySelectorAll('.nav-link').forEach(link => {
       link.addEventListener('click', e => {
         e.preventDefault();
         document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
         document.getElementById(link.dataset.target).classList.remove('hidden');
-        if (link.dataset.target === 'products') fetchProducts();
-        if (link.dataset.target === 'orders') fetchOrders();
-        if (link.dataset.target === 'revenue') fetchRevenue();
+        if (link.dataset-target === 'products') fetchProducts();
+        if (link.dataset-target === 'orders') fetchOrders();
+        if (link.dataset-target === 'revenue') fetchRevenue();
       });
     });
-    // Initial view
-    document.querySelector('.nav-link[data-target="products"]').click();
 
-    // Fetch stats
     async function fetchStats() {
       const [proRes, ordRes] = await Promise.all([
         fetch(`${apiBase}/products`), fetch(`${apiBase}/orders`)
@@ -148,13 +206,13 @@
       const products = await proRes.json();
       const orders = await ordRes.json();
       document.getElementById('statProducts').textContent = products.length;
-      const newOrders = orders.filter(o => new Date(o.created_at).toDateString() === new Date().toDateString());
+      const today = new Date().toDateString();
+      const newOrders = orders.filter(o => new Date(o.created_at).toDateString() === today);
       document.getElementById('statOrders').textContent = newOrders.length;
-      const revenue = orders.reduce((sum,o) => sum + o.total, 0);
+      const revenue = orders.reduce((sum, o) => sum + o.total, 0);
       document.getElementById('statRevenue').textContent = revenue.toLocaleString('vi-VN') + 'đ';
     }
 
-    // Products CRUD
     async function fetchProducts() {
       await fetchStats();
       const res = await fetch(`${apiBase}/products`);
@@ -162,7 +220,6 @@
       const tbody = document.getElementById('productTable'); tbody.innerHTML = '';
       products.forEach(p => {
         const tr = document.createElement('tr');
-        tr.className = '';
         tr.innerHTML = `
           <td class="px-4 py-2 text-sm text-gray-700">${p.id}</td>
           <td class="px-4 py-2 text-sm text-gray-700">${p.name}</td>
@@ -171,13 +228,11 @@
           <td class="px-4 py-2 text-sm text-gray-700">
             <button onclick="showEditForm(${p.id}, '${p.name}', ${p.price}, ${p.stock})" class="text-blue-600 mr-2">📝</button>
             <button onclick="deleteProduct(${p.id})" class="text-red-600">🗑️</button>
-          </td>
-        `;
+          </td>`;
         tbody.appendChild(tr);
       });
     }
 
-    // Add product
     document.getElementById('addForm').addEventListener('submit', async e => {
       e.preventDefault();
       const name = document.getElementById('newName').value;
@@ -187,23 +242,18 @@
       e.target.reset(); fetchProducts();
     });
 
-    // Edit form show
     function showEditForm(id, name, price, stock) {
-      const nameInput = prompt('Tên sản phẩm:', name);
-      const priceInput = prompt('Giá (VND):', price);
-      const stockInput = prompt('Tồn kho:', stock);
-      if (nameInput != null && priceInput != null && stockInput != null) {
-        updateProduct(id, nameInput, +priceInput, +stockInput);
-      }
+      const n = prompt('Tên sản phẩm:', name);
+      const p = prompt('Giá (VND):', price);
+      const s = prompt('Tồn kho:', stock);
+      if (n && p && s) updateProduct(id, n, +p, +s);
     }
 
-    // Update product
     async function updateProduct(id, name, price, stock) {
       await fetch(`${apiBase}/products/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name, price, stock }) });
       fetchProducts();
     }
 
-    // Delete product
     async function deleteProduct(id) {
       if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
         await fetch(`${apiBase}/products/${id}`, { method: 'DELETE' });
@@ -211,7 +261,6 @@
       }
     }
 
-    // Orders
     async function fetchOrders() {
       await fetchStats();
       const res = await fetch(`${apiBase}/orders`);
@@ -221,14 +270,14 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td class="px-4 py-2 text-sm text-gray-700">#${o.id}</td>
-          <td class="px-4 py-2 text-sm text-gray-700">${o.customer}</td>
+          <td class="px-4 py-2 text-sm text-gray-700">${o.customer || '-'}</td>
           <td class="px-4 py-2 text-sm text-gray-700">${o.total.toLocaleString()}đ</td>
           <td class="px-4 py-2 text-sm text-gray-700">${new Date(o.created_at).toLocaleString()}</td>
-        `; tbody.appendChild(tr);
+        `;
+        tbody.appendChild(tr);
       });
     }
 
-    // Revenue
     async function fetchRevenue() {
       await fetchStats();
       const res = await fetch(`${apiBase}/orders`);
@@ -237,6 +286,11 @@
       const data = orders.map(o => o.total);
       new Chart(document.getElementById('revenueChart'), { type: 'line', data: { labels, datasets: [{ label: 'Doanh thu', data }] }, options: { responsive: true } });
     }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      // auth listener handles view toggle
+    });
   </script>
 </body>
 </html>
