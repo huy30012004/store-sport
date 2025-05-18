@@ -10,6 +10,9 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+  <style>body { font-family: 'Montserrat', sans-serif; }</style>
 </head>
 <body class="bg-gray-100 font-sans">
   <!-- Login Form -->
@@ -135,161 +138,187 @@
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
   <script>
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyCb-v3LpPCddGtVjscSmvxpGMIxUgOMGsU",
-      authDomain: "sport-store-be305.firebaseapp.com",
-      projectId: "sport-store-be305",
-      storageBucket: "sport-store-be305.appspot.com",
-      messagingSenderId: "836462598975",
-      appId: "1:836462598975:web:e45aabacb3ea521351118a"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const adminEmails = ['admin@sportstore.com'];
+    document.addEventListener('DOMContentLoaded', () => {
+      // Firebase config
+      const firebaseConfig = {
+        apiKey: "AIzaSyCb-v3LpPCddGtVjscSmvxpGMIxUgOMGsU",
+        authDomain: "sport-store-be305.firebaseapp.com",
+        projectId: "sport-store-be305",
+        storageBucket: "sport-store-be305.appspot.com",
+        messagingSenderId: "836462598975",
+        appId: "1:836462598975:web:e45aabacb3ea521351118a"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const adminEmails = ['admin@sportstore.com'];
 
-    // Elements
-    const loginPage = document.getElementById('login-page');
-    const dashboard = document.getElementById('dashboard');
-    const loginBtn = document.getElementById('login-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const loginError = document.getElementById('login-error');
-    const adminEmail = document.getElementById('admin-email');
+      // Elements
+      const loginPage = document.getElementById('login-page');
+      const dashboard = document.getElementById('dashboard');
+      const loginBtn = document.getElementById('login-btn');
+      const logoutBtn = document.getElementById('logout-btn');
+      const loginError = document.getElementById('login-error');
+      const adminEmail = document.getElementById('admin-email');
+      const navOrdersLink = document.querySelector('.nav-link[data-target="orders"]');
+      const navLinks = document.querySelectorAll('.nav-link');
+      const apiBase = 'http://localhost:5000/api';
 
-    // Auth state
-    auth.onAuthStateChanged(user => {
-      if (user && adminEmails.includes(user.email)) {
-        loginPage.classList.add('hidden');
-        dashboard.classList.remove('hidden');
-        adminEmail.textContent = user.email;
-        document.querySelector('.nav-link[data-target="products"]').click();
-      } else {
-        if (user) auth.signOut();
-        loginPage.classList.remove('hidden');
-        dashboard.classList.add('hidden');
-      }
-    });
+      // Auth state listener
+      auth.onAuthStateChanged(user => {
+        if (user && adminEmails.includes(user.email)) {
+          loginPage.classList.add('hidden');
+          dashboard.classList.remove('hidden');
+          adminEmail.textContent = user.email;
+          navOrdersLink?.click();
+        } else {
+          if (user) auth.signOut();
+          loginPage.classList.remove('hidden');
+          dashboard.classList.add('hidden');
+        }
+      });
 
-    // Login handler
-    loginBtn.onclick = () => {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      auth.signInWithEmailAndPassword(email, password)
-        .catch(err => {
-          loginError.textContent = err.message;
-          loginError.classList.remove('hidden');
+      // Login
+      loginBtn?.addEventListener('click', () => {
+        const email = document.getElementById('email')?.value;
+        const password = document.getElementById('password')?.value;
+        auth.signInWithEmailAndPassword(email, password)
+          .catch(err => {
+            loginError.textContent = err.message;
+            loginError.classList.remove('hidden');
+          });
+      });
+
+      // Logout
+      logoutBtn?.addEventListener('click', () => auth.signOut());
+
+      // Navigation
+      navLinks.forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
+          const targetId = e.currentTarget.dataset.target;
+          document.getElementById(targetId)?.classList.remove('hidden');
+
+          if (targetId === 'products') fetchProducts();
+          if (targetId === 'orders') fetchOrders();
+          if (targetId === 'revenue') fetchRevenue();
         });
-    };
+      });
 
-    // Logout
-    logoutBtn.onclick = () => auth.signOut();
+      // Fetch stats
+      async function fetchStats() {
+        const [proRes, ordRes] = await Promise.all([
+          fetch(`${apiBase}/products`),
+          fetch(`${apiBase}/orders`)
+        ]);
+        const products = await proRes.json();
+        const orders = await ordRes.json();
+        document.getElementById('statProducts').textContent = products.length;
+        const today = new Date().toDateString();
+        const newOrders = orders.filter(o => new Date(o.created_at).toDateString() === today);
+        document.getElementById('statOrders').textContent = newOrders.length;
+        const revenue = orders.reduce((sum, o) => sum + o.total, 0);
+        document.getElementById('statRevenue').textContent = revenue.toLocaleString('vi-VN') + 'đ';
+      }
 
-    // Dashboard functions
-    const apiBase = 'http://localhost:5000/api';
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', e => {
+      // Fetch products
+      async function fetchProducts() {
+        await fetchStats();
+        const res = await fetch(`${apiBase}/products`);
+        const products = await res.json();
+        const tbody = document.getElementById('productTable');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        products.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="px-4 py-2 text-sm text-gray-700">${p.id}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${p.name}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${p.price.toLocaleString()}đ</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${p.stock}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">
+              <button onclick="showEditForm(${p.id}, '${p.name}', ${p.price}, ${p.stock})" class="text-blue-600 mr-2">📝</button>
+              <button onclick="deleteProduct(${p.id})" class="text-red-600">🗑️</button>
+            </td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // Add product
+      const addForm = document.getElementById('addForm');
+      addForm?.addEventListener('submit', async e => {
         e.preventDefault();
-        document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
-        document.getElementById(link.dataset.target).classList.remove('hidden');
-        if (link.dataset-target === 'products') fetchProducts();
-        if (link.dataset-target === 'orders') fetchOrders();
-        if (link.dataset-target === 'revenue') fetchRevenue();
+        const name = document.getElementById('newName')?.value;
+        const price = +document.getElementById('newPrice')?.value;
+        const stock = +document.getElementById('newStock')?.value;
+        await fetch(`${apiBase}/products`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, price, stock })
+        });
+        addForm.reset();
+        fetchProducts();
       });
-    });
 
-    async function fetchStats() {
-      const [proRes, ordRes] = await Promise.all([
-        fetch(`${apiBase}/products`), fetch(`${apiBase}/orders`)
-      ]);
-      const products = await proRes.json();
-      const orders = await ordRes.json();
-      document.getElementById('statProducts').textContent = products.length;
-      const today = new Date().toDateString();
-      const newOrders = orders.filter(o => new Date(o.created_at).toDateString() === today);
-      document.getElementById('statOrders').textContent = newOrders.length;
-      const revenue = orders.reduce((sum, o) => sum + o.total, 0);
-      document.getElementById('statRevenue').textContent = revenue.toLocaleString('vi-VN') + 'đ';
-    }
-
-    async function fetchProducts() {
-      await fetchStats();
-      const res = await fetch(`${apiBase}/products`);
-      const products = await res.json();
-      const tbody = document.getElementById('productTable'); tbody.innerHTML = '';
-      products.forEach(p => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="px-4 py-2 text-sm text-gray-700">${p.id}</td>
-          <td class="px-4 py-2 text-sm text-gray-700">${p.name}</td>
-          <td class="px-4 py-2 text-sm text-gray-700">${p.price.toLocaleString()}đ</td>
-          <td class="px-4 py-2 text-sm text-gray-700">${p.stock}</td>
-          <td class="px-4 py-2 text-sm text-gray-700">
-            <button onclick="showEditForm(${p.id}, '${p.name}', ${p.price}, ${p.stock})" class="text-blue-600 mr-2">📝</button>
-            <button onclick="deleteProduct(${p.id})" class="text-red-600">🗑️</button>
-          </td>`;
-        tbody.appendChild(tr);
-      });
-    }
-
-    document.getElementById('addForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      const name = document.getElementById('newName').value;
-      const price = +document.getElementById('newPrice').value;
-      const stock = +document.getElementById('newStock').value;
-      await fetch(`${apiBase}/products`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name, price, stock }) });
-      e.target.reset(); fetchProducts();
-    });
-
-    function showEditForm(id, name, price, stock) {
-      const n = prompt('Tên sản phẩm:', name);
-      const p = prompt('Giá (VND):', price);
-      const s = prompt('Tồn kho:', stock);
-      if (n && p && s) updateProduct(id, n, +p, +s);
-    }
-
-    async function updateProduct(id, name, price, stock) {
-      await fetch(`${apiBase}/products/${id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name, price, stock }) });
-      fetchProducts();
-    }
-
-    async function deleteProduct(id) {
-      if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
-        await fetch(`${apiBase}/products/${id}`, { method: 'DELETE' });
+      // Edit/Delete helpers
+      window.showEditForm = (id, name, price, stock) => {
+        const n = prompt('Tên sản phẩm:', name);
+        const p = prompt('Giá (VND):', price);
+        const s = prompt('Tồn kho:', stock);
+        if (n && p && s) updateProduct(id, n, +p, +s);
+      };
+      window.deleteProduct = async id => {
+        if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
+          await fetch(`${apiBase}/products/${id}`, { method: 'DELETE' });
+          fetchProducts();
+        }
+      };
+      async function updateProduct(id, name, price, stock) {
+        await fetch(`${apiBase}/products/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, price, stock })
+        });
         fetchProducts();
       }
-    }
 
-    async function fetchOrders() {
-      await fetchStats();
-      const res = await fetch(`${apiBase}/orders`);
-      const orders = await res.json();
-      const tbody = document.getElementById('ordersTable'); tbody.innerHTML = '';
-      orders.forEach(o => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="px-4 py-2 text-sm text-gray-700">#${o.id}</td>
-          <td class="px-4 py-2 text-sm text-gray-700">${o.customer || '-'}</td>
-          <td class="px-4 py-2 text-sm text-gray-700">${o.total.toLocaleString()}đ</td>
-          <td class="px-4 py-2 text-sm text-gray-700">${new Date(o.created_at).toLocaleString()}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
+      // Fetch orders
+      async function fetchOrders() {
+        await fetchStats();
+        const res = await fetch(`${apiBase}/orders`);
+        const orders = await res.json();
+        const tbody = document.getElementById('ordersTable');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        orders.forEach(o => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="px-4 py-2 text-sm text-gray-700">#${o.id}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${o.customer || '-'}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${o.total.toLocaleString()}đ</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${new Date(o.created_at).toLocaleString()}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
 
-    async function fetchRevenue() {
-      await fetchStats();
-      const res = await fetch(`${apiBase}/orders`);
-      const orders = await res.json();
-      const labels = orders.map(o => new Date(o.created_at).toLocaleDateString());
-      const data = orders.map(o => o.total);
-      new Chart(document.getElementById('revenueChart'), { type: 'line', data: { labels, datasets: [{ label: 'Doanh thu', data }] }, options: { responsive: true } });
-    }
+      // Fetch revenue
+      async function fetchRevenue() {
+        await fetchStats();
+        const res = await fetch(`${apiBase}/orders`);
+        const orders = await res.json();
+        const labels = orders.map(o => new Date(o.created_at).toLocaleDateString());
+        const data = orders.map(o => o.total);
+        new Chart(document.getElementById('revenueChart'), {
+          type: 'line',
+          data: { labels, datasets: [{ label: 'Doanh thu', data }] },
+          options: { responsive: true }
+        });
+      }
 
-    // Initialize on load
-    document.addEventListener('DOMContentLoaded', () => {
-      // auth listener handles view toggle
+      // Initialize first view
+      navOrdersLink?.click();
     });
   </script>
 </body>

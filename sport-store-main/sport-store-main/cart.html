@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Giỏ hàng</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.paypal.com/sdk/js?client-id=AaTT4LUw73wcCZNL6Jt4f3kHU6CrMqf5wuL99VXR4CMjfq9qp-u86CFUT8SpSunpFKUl86Ak476gR8Jr&currency=USD"></script>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>body { font-family: 'Montserrat', sans-serif; }</style>
 </head>
 <body class="bg-gray-100">
+
+  <!-- Auth Page -->
   <div id="auth-page" class="flex items-center justify-center h-screen">
-    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
       <h2 class="text-2xl font-bold mb-6 text-center">Đăng nhập / Đăng ký</h2>
       <input id="email" type="email" placeholder="Email" class="w-full mb-3 p-2 border rounded" />
       <input id="password" type="password" placeholder="Mật khẩu" class="w-full mb-4 p-2 border rounded" />
@@ -26,6 +28,7 @@
     </div>
   </div>
 
+  <!-- Cart Page -->
   <div id="cart-page" class="hidden">
     <header class="bg-white shadow-md">
       <div class="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -40,6 +43,7 @@
         </div>
       </div>
     </header>
+
     <main class="container mx-auto px-4 py-10">
       <h2 class="text-3xl font-bold mb-6">Giỏ hàng của bạn</h2>
       <div id="cart-container" class="space-y-6"></div>
@@ -72,41 +76,73 @@
 
       auth.onAuthStateChanged(user => {
         if (user) {
+          console.log("✅ Đã đăng nhập:", user.email);
           authPage.classList.add('hidden');
           cartPage.classList.remove('hidden');
-          initializeCart();
+          initializeCart(user);
         } else {
+          console.log("⛔ Chưa đăng nhập");
           cartPage.classList.add('hidden');
           authPage.classList.remove('hidden');
         }
       });
 
       btnRegister.addEventListener('click', () => {
-        auth.createUserWithEmailAndPassword(emailInput.value, passInput.value)
-          .catch(err => { authError.textContent = err.message; authError.classList.remove('hidden'); });
+        const email = emailInput.value.trim();
+        const password = passInput.value.trim();
+        if (!email || !password) {
+          authError.textContent = "Vui lòng nhập email và mật khẩu.";
+          authError.classList.remove('hidden');
+          return;
+        }
+        auth.createUserWithEmailAndPassword(email, password)
+          .then(() => authError.classList.add('hidden'))
+          .catch(err => {
+            console.log("❌ Lỗi đăng ký:", err.message);
+            authError.textContent = err.message;
+            authError.classList.remove('hidden');
+          });
       });
+
       btnLogin.addEventListener('click', () => {
-        auth.signInWithEmailAndPassword(emailInput.value, passInput.value)
-          .catch(err => { authError.textContent = err.message; authError.classList.remove('hidden'); });
+        const email = emailInput.value.trim();
+        const password = passInput.value.trim();
+        if (!email || !password) {
+          authError.textContent = "Vui lòng nhập email và mật khẩu.";
+          authError.classList.remove('hidden');
+          return;
+        }
+        auth.signInWithEmailAndPassword(email, password)
+          .then(() => authError.classList.add('hidden'))
+          .catch(err => {
+            console.log("❌ Lỗi đăng nhập:", err.message);
+            authError.textContent = err.message;
+            authError.classList.remove('hidden');
+          });
       });
+
       btnLogout.addEventListener('click', () => auth.signOut());
 
-      function initializeCart() {
+      function initializeCart(user) {
         const apiBase = 'http://localhost:5000/api';
-        function formatCurrency(v) { return v.toLocaleString('vi-VN',{style:'currency',currency:'VND'}); }
-        let cart = JSON.parse(localStorage.getItem('cart'))||[];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const formatCurrency = v => v.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+
+        console.log("🛒 Giỏ hàng hiện tại:", cart);
 
         function updateCartCount() {
-          const count = cart.reduce((s,i)=>s+i.quantity,0);
+          const count = cart.reduce((s, i) => s + i.quantity, 0);
           document.getElementById('cart-count').textContent = count;
         }
 
         function renderCart() {
-          const container = document.getElementById('cart-container'); container.innerHTML = '';
+          const container = document.getElementById('cart-container');
+          container.innerHTML = '';
           let total = 0;
-          cart.forEach((item,i) => {
-            total += item.price*item.quantity;
-            const div = document.createElement('div'); div.className='bg-white p-4 rounded shadow-md flex justify-between items-center';
+          cart.forEach((item, i) => {
+            total += item.price * item.quantity;
+            const div = document.createElement('div');
+            div.className = 'bg-white p-4 rounded shadow-md flex justify-between items-center';
             div.innerHTML = `
               <div>
                 <h3 class="font-semibold text-lg">${item.name}</h3>
@@ -118,7 +154,7 @@
                 </div>
               </div>
               <div class="text-right">
-                <p class="text-red-500 font-bold">${formatCurrency(item.price*item.quantity)}</p>
+                <p class="text-red-500 font-bold">${formatCurrency(item.price * item.quantity)}</p>
                 <button data-idx="${i}" class="delete-btn text-sm text-blue-600 hover:underline mt-2">Xoá</button>
               </div>`;
             container.appendChild(div);
@@ -129,31 +165,96 @@
 
         function attachEvents() {
           document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.onclick = () => { const i=+btn.dataset.idx; cart.splice(i,1); localStorage.setItem('cart',JSON.stringify(cart)); renderCart(); updateCartCount(); };
+            btn.onclick = () => {
+              const i = +btn.dataset.idx;
+              cart.splice(i, 1);
+              localStorage.setItem('cart', JSON.stringify(cart));
+              renderCart();
+              updateCartCount();
+            };
           });
           document.querySelectorAll('.increase-btn').forEach(btn => {
-            btn.onclick = () => { const i=+btn.dataset.idx; cart[i].quantity++; localStorage.setItem('cart',JSON.stringify(cart)); renderCart(); updateCartCount(); };
+            btn.onclick = () => {
+              const i = +btn.dataset.idx;
+              cart[i].quantity++;
+              localStorage.setItem('cart', JSON.stringify(cart));
+              renderCart();
+              updateCartCount();
+            };
           });
           document.querySelectorAll('.decrease-btn').forEach(btn => {
-            btn.onclick = () => { const i=+btn.dataset.idx; if(cart[i].quantity>1) cart[i].quantity--; else cart.splice(i,1); localStorage.setItem('cart',JSON.stringify(cart)); renderCart(); updateCartCount(); };
+            btn.onclick = () => {
+              const i = +btn.dataset.idx;
+              if (cart[i].quantity > 1) cart[i].quantity--;
+              else cart.splice(i, 1);
+              localStorage.setItem('cart', JSON.stringify(cart));
+              renderCart();
+              updateCartCount();
+            };
           });
         }
 
         async function saveOrder() {
-          const total = cart.reduce((s,i)=>s+i.price*i.quantity,0);
-          try { const res=await fetch(`${apiBase}/orders`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:cart,total})});return res.ok;} catch{return false;}
+          const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+          const payload = {
+            customer: user.email,
+            created_at: new Date().toISOString(),
+            items: cart,
+            total
+          };
+          try {
+            const res = await fetch(`${apiBase}/orders`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            return res.ok;
+          } catch (err) {
+            console.error("❌ Lỗi gửi đơn:", err);
+            return false;
+          }
         }
 
         document.getElementById('checkout-btn').onclick = async () => {
-          if(!cart.length){alert('Giỏ hàng đang trống');return;} if(await saveOrder()){localStorage.removeItem('cart');cart=[];renderCart();updateCartCount();alert('Đặt hàng thành công');} else alert('Lỗi gửi đơn');
+          if (!cart.length) {
+            alert('Giỏ hàng đang trống');
+            return;
+          }
+          if (await saveOrder()) {
+            localStorage.removeItem('cart');
+            cart = [];
+            renderCart();
+            updateCartCount();
+            alert('Đặt hàng thành công');
+          } else {
+            alert('Lỗi khi gửi đơn hàng');
+          }
         };
 
         paypal.Buttons({
-          createOrder:(_,actions)=>actions.order.create({purchase_units:[{amount:{value:(cart.reduce((s,i)=>s+i.price*i.quantity,0)/24000).toFixed(2)}}]}),
-          onApprove:async(_,actions)=>{const details=await actions.order.capture(); if(await saveOrder()){alert(`Thanh toán thành công! Cảm ơn ${details.payer.name.given_name}`);localStorage.removeItem('cart');cart=[];renderCart();updateCartCount();} else alert('Thanh toán nhưng lỗi lưu đơn');}
+          createOrder: (_, actions) => actions.order.create({
+            purchase_units: [{
+              amount: {
+                value: (cart.reduce((s, i) => s + i.price * i.quantity, 0) / 24000).toFixed(2)
+              }
+            }]
+          }),
+          onApprove: async (_, actions) => {
+            const details = await actions.order.capture();
+            if (await saveOrder()) {
+              alert(`Thanh toán thành công! Cảm ơn ${details.payer.name.given_name}`);
+              localStorage.removeItem('cart');
+              cart = [];
+              renderCart();
+              updateCartCount();
+            } else {
+              alert('Thanh toán thành công nhưng lỗi khi lưu đơn hàng');
+            }
+          }
         }).render('#paypal-button-container');
 
-        renderCart(); updateCartCount();
+        renderCart();
+        updateCartCount();
       }
     });
   </script>
