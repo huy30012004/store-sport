@@ -1,10 +1,58 @@
 {
   "products": [
     {
-      "name": "gi\u00e0y",
-      "price": 1700000,
-      "stock": 5,
+      "name": "gi\u00e0y adidas predator",
+      "price": 1500000,
+      "stock": 6,
+      "image_url": "https://i.ebayimg.com/images/g/GH0AAOSw2lBmnkKg/s-l800.jpg",
+      "categories": [
+        "football",
+        "giay"
+      ],
       "id": 1
+    },
+    {
+      "name": "gi\u00e0y F50 304",
+      "price": 1700000,
+      "stock": 7,
+      "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxP2_gZctSp_GGubhp48uJSGVfx3t5cJD9cw&s",
+      "categories": [
+        "football",
+        "giay"
+      ],
+      "id": 2
+    },
+    {
+      "name": "gi\u00e0y PUMA ULTRA ULTIMATE",
+      "price": 1900000,
+      "stock": 4,
+      "image_url": "https://product.hstatic.net/200000278317/product/ng-futsal-giay-da-bong-puma-ultra-ultimate-cage-107502-04-vang-trang-1_798fc03340b34987ac13a87ad39c50dd_master.jpg",
+      "categories": [
+        "football",
+        "giay"
+      ],
+      "id": 3
+    },
+    {
+      "name": "\u00c1o kho\u00e1c adidas Adicolor",
+      "price": 800000,
+      "stock": 13,
+      "image_url": "https://cdn.storims.com/api/v2/image/resize?path=https://storage.googleapis.com/storims_cdn/storims/uploads/1894952dcef46b47a924658edd96ada4.jpeg&format=jpeg",
+      "categories": [
+        "nu",
+        "quanao"
+      ],
+      "id": 4
+    },
+    {
+      "name": "Balo Adidas Adicolor",
+      "price": 840000,
+      "stock": 8,
+      "image_url": "https://down-vn.img.susercontent.com/file/vn-11134201-7r98o-lmsjn3d5j3kvf2",
+      "categories": [
+        "balo"
+      ],
+      "id": 5
     }
   ],
   "orders": [
@@ -119,6 +167,48 @@
       ],
       "total": 950000,
       "id": 9
+    },
+    {
+      "customer": "admin@sportstore.com",
+      "created_at": "2025-05-30T21:59:54.660607",
+      "items": [
+        {
+          "id": 8,
+          "name": "Gi\u00e0y \u0111\u00e1 b\u00f3ng F50 304",
+          "price": 1800000,
+          "quantity": 1
+        }
+      ],
+      "total": 1800000,
+      "id": 10
+    },
+    {
+      "customer": "user1@gmail.com",
+      "created_at": "2025-05-30T22:02:26.379699",
+      "items": [
+        {
+          "id": 3,
+          "name": "gi\u00e0y PUMA ULTRA ULTIMATE",
+          "price": 1900000,
+          "quantity": 1
+        }
+      ],
+      "total": 1900000,
+      "id": 11
+    },
+    {
+      "customer": "admin@sportstore.com",
+      "created_at": "2025-06-02T10:26:58.418141",
+      "items": [
+        {
+          "id": 2,
+          "name": "gi\u00e0y F50 304",
+          "price": 1700000,
+          "quantity": 1
+        }
+      ],
+      "total": 1700000,
+      "id": 12
     }
   ]
 }
