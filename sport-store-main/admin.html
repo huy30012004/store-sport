@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - Sport Store</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+  <style>body { font-family: 'Montserrat', sans-serif; }</style>
+</head>
+<body class="bg-gray-100 font-sans">
+  <!-- Login Form -->
+  <div id="login-page" class="flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
+      <h2 class="text-2xl font-semibold mb-4">Đăng nhập Admin</h2>
+      <input id="email" type="email" placeholder="Email" class="w-full mb-3 p-2 border rounded" />
+      <input id="password" type="password" placeholder="Mật khẩu" class="w-full mb-4 p-2 border rounded" />
+      <button id="login-btn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Đăng nhập</button>
+      <p id="login-error" class="mt-2 text-red-500 text-sm hidden"></p>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="hidden flex h-screen">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-white shadow-md flex-shrink-0">
+      <div class="p-6">
+        <h2 class="text-2xl font-bold text-blue-600">SPORT STORE</h2>
+      </div>
+      <nav class="mt-6 flex flex-col">
+        <a href="#" class="nav-link flex items-center px-6 py-3 text-gray-700 hover:bg-blue-100" data-target="products">
+          <span class="material-icons mr-3">inventory_2</span>Sản phẩm
+        </a>
+        <a href="#" class="nav-link flex items-center px-6 py-3 text-gray-700 hover:bg-blue-100" data-target="orders">
+          <span class="material-icons mr-3">receipt_long</span>Đơn hàng
+        </a>
+        <a href="#" class="nav-link flex items-center px-6 py-3 text-gray-700 hover:bg-blue-100" data-target="revenue">
+          <span class="material-icons mr-3">insights</span>Doanh thu
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="bg-white shadow-md flex items-center justify-between px-6 py-4">
+        <h1 class="text-2xl font-semibold">Dashboard</h1>
+        <div class="flex items-center space-x-4">
+          <span id="admin-email" class="text-gray-700"></span>
+          <button id="logout-btn" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Đăng xuất</button>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="p-6 overflow-auto flex-1">
+        <!-- Products Section -->
+        <section id="products" class="tab-content hidden">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
+              <h3 class="text-lg font-semibold text-gray-700">Tổng sản phẩm</h3>
+              <p id="statProducts" class="text-3xl font-bold text-blue-600">0</p>
+            </div>
+          </div>
+          <div class="bg-white rounded shadow p-4 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Thêm sản phẩm mới</h2>
+            <form id="addForm" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <input type="text"   id="newName"     placeholder="Tên sản phẩm" class="border p-2 rounded" required />
+              <input type="number" id="newPrice"    placeholder="Giá (VND)"     class="border p-2 rounded" required />
+              <input type="number" id="newStock"    placeholder="Tồn kho"       class="border p-2 rounded" required />
+              <input type="text"   id="newImageUrl" placeholder="Image URL"     class="border p-2 rounded" />
+              <div class="md:col-span-5">
+                <label class="block font-medium text-gray-700 mb-1">Danh mục:</label>
+                <div class="flex flex-wrap gap-4">
+                  <label><input type="checkbox" class="category-checkbox" value="football" /> Football</label>
+                  <label><input type="checkbox" class="category-checkbox" value="running" /> Running</label>
+                  <label><input type="checkbox" class="category-checkbox" value="lifestyle" /> Lifestyle</label>
+                  <label><input type="checkbox" class="category-checkbox" value="nam" /> Nam</label>
+                  <label><input type="checkbox" class="category-checkbox" value="nu" /> Nữ</label>
+                  <label><input type="checkbox" class="category-checkbox" value="treem" /> Trẻ em</label>
+                  <label><input type="checkbox" class="category-checkbox" value="balo" /> Balo</label>
+                  <label><input type="checkbox" class="category-checkbox" value="non" /> Nón</label>
+                  <label><input type="checkbox" class="category-checkbox" value="tuisach" /> Túi xách</label>
+                </div>
+              </div>
+
+              <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Thêm</button>
+            </form>
+
+          </div>
+          <div class="bg-white rounded shadow p-4 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Danh sách sản phẩm</h2>
+            <div class="overflow-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">ID</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tên</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Giá</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tồn kho</th>
+                    <th class="px-4 py-2 text-sm font-medium text-gray-700">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody id="productTable" class="bg-white divide-y divide-gray-200"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Orders Section -->
+        <section id="orders" class="tab-content hidden">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
+              <h3 class="text-lg font-semibold text-gray-700">Đơn hàng mới</h3>
+              <p id="statOrders" class="text-3xl font-bold text-green-600">0</p>
+            </div>
+          </div>
+          <div class="bg-white rounded shadow p-4 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Danh sách đơn hàng</h2>
+            <div class="overflow-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Mã đơn</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Khách hàng</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tổng tiền</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Ngày</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTable" class="bg-white divide-y divide-gray-200"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Revenue Section -->
+        <section id="revenue" class="tab-content hidden">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
+              <h3 class="text-lg font-semibold text-gray-700">Doanh thu</h3>
+              <p id="statRevenue" class="text-3xl font-bold text-red-600">0đ</p>
+            </div>
+          </div>
+          <div class="bg-white rounded shadow p-4">
+            <h2 class="text-xl font-semibold mb-4">Biểu đồ doanh thu</h2>
+            <canvas id="revenueChart" class="w-full h-64"></canvas>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Firebase config
+      const firebaseConfig = {
+        apiKey: "AIzaSyCb-v3LpPCddGtVjscSmvxpGMIxUgOMGsU",
+        authDomain: "sport-store-be305.firebaseapp.com",
+        projectId: "sport-store-be305",
+        storageBucket: "sport-store-be305.appspot.com",
+        messagingSenderId: "836462598975",
+        appId: "1:836462598975:web:e45aabacb3ea521351118a"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const adminEmails = ['admin@sportstore.com'];
+
+      // Elements
+      const loginPage = document.getElementById('login-page');
+      const dashboard = document.getElementById('dashboard');
+      const loginBtn = document.getElementById('login-btn');
+      const logoutBtn = document.getElementById('logout-btn');
+      const loginError = document.getElementById('login-error');
+      const adminEmail = document.getElementById('admin-email');
+      const navOrdersLink = document.querySelector('.nav-link[data-target="orders"]');
+      const navLinks = document.querySelectorAll('.nav-link');
+      const apiBase = 'http://localhost:5000/api';
+
+      let editId = null;
+
+      // Auth state listener
+      auth.onAuthStateChanged(user => {
+        if (user && adminEmails.includes(user.email)) {
+          loginPage.classList.add('hidden');
+          dashboard.classList.remove('hidden');
+          adminEmail.textContent = user.email;
+          navOrdersLink?.click();
+        } else {
+          if (user) auth.signOut();
+          loginPage.classList.remove('hidden');
+          dashboard.classList.add('hidden');
+        }
+      });
+
+      // Login
+      loginBtn?.addEventListener('click', () => {
+        const email = document.getElementById('email')?.value;
+        const password = document.getElementById('password')?.value;
+        auth.signInWithEmailAndPassword(email, password)
+          .catch(err => {
+            loginError.textContent = err.message;
+            loginError.classList.remove('hidden');
+          });
+      });
+
+      // Logout
+      logoutBtn?.addEventListener('click', () => auth.signOut());
+
+      // Navigation
+      navLinks.forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
+          const targetId = e.currentTarget.dataset.target;
+          document.getElementById(targetId)?.classList.remove('hidden');
+
+          if (targetId === 'products') fetchProducts();
+          if (targetId === 'orders') fetchOrders();
+          if (targetId === 'revenue') fetchRevenue();
+        });
+      });
+
+      // Fetch stats
+      async function fetchStats() {
+        const [proRes, ordRes] = await Promise.all([
+          fetch(`${apiBase}/products`),
+          fetch(`${apiBase}/orders`)
+        ]);
+        const products = await proRes.json();
+        const orders = await ordRes.json();
+        document.getElementById('statProducts').textContent = products.length;
+        const today = new Date().toDateString();
+        const newOrders = orders.filter(o => new Date(o.created_at).toDateString() === today);
+        document.getElementById('statOrders').textContent = newOrders.length;
+        const revenue = orders.reduce((sum, o) => sum + o.total, 0);
+        document.getElementById('statRevenue').textContent = revenue.toLocaleString('vi-VN') + 'đ';
+      }
+
+      // Fetch products
+      async function fetchProducts() {
+        await fetchStats();
+        const res = await fetch(`${apiBase}/products`);
+        const products = await res.json();
+        const tbody = document.getElementById('productTable');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        products.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="px-4 py-2 text-sm text-gray-700">${p.id}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${p.name}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${p.price.toLocaleString()}đ</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${p.stock}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">
+              <button onclick="showEditForm(${p.id}, '${p.name}', ${p.price}, ${p.stock})" class="text-blue-600 mr-2">📝</button>
+              <button onclick="deleteProduct(${p.id})" class="text-red-600">🗑️</button>
+            </td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // Add product
+      const addForm = document.getElementById('addForm');
+      addForm?.addEventListener('submit', async e => {
+        e.preventDefault();
+        const name     = document.getElementById('newName')?.value;
+        const price    = +document.getElementById('newPrice')?.value;
+        const stock    = +document.getElementById('newStock')?.value;
+        const imageUrl = document.getElementById('newImageUrl')?.value;
+        const categoryEls = document.querySelectorAll('.category-checkbox:checked');
+        const categories = Array.from(categoryEls).map(cb => cb.value);
+
+
+        if (categories.length === 0) {
+          alert("Vui lòng chọn ít nhất một danh mục sản phẩm");
+          return;
+        }
+
+        if (editId) {
+          // Cập nhật sản phẩm
+          await fetch(`${apiBase}/products/${editId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, price, stock, image_url: imageUrl, categories })
+          });
+        } else {
+          // Thêm mới sản phẩm
+          await fetch(`${apiBase}/products`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, price, stock, image_url: imageUrl, categories })
+          });
+        }
+
+        addForm.reset();
+        fetchProducts();
+        editId = null;
+        document.querySelector('#addForm button[type="submit"]').textContent = 'Thêm';
+
+});
+
+
+      // Edit/Delete helpers
+      window.showEditForm = async (id) => {
+        const res = await fetch(`${apiBase}/products/${id}`);
+        const product = await res.json();
+
+        document.getElementById('newName').value     = product.name;
+        document.getElementById('newPrice').value    = product.price;
+        document.getElementById('newStock').value    = product.stock;
+        document.getElementById('newImageUrl').value = product.image_url || '';
+
+        // Reset tất cả checkbox
+        document.querySelectorAll('.category-checkbox').forEach(cb => cb.checked = false);
+
+        // Tick lại những danh mục có trong product.categories
+        (product.categories || []).forEach(c => {
+          const cb = document.querySelector(`.category-checkbox[value="${c}"]`);
+          if (cb) cb.checked = true;
+        });
+
+        editId = id;
+        document.querySelector('#addForm button[type="submit"]').textContent = 'Lưu';
+      };
+
+
+
+      window.deleteProduct = async id => {
+        if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
+          await fetch(`${apiBase}/products/${id}`, { method: 'DELETE' });
+          fetchProducts();
+        }
+      };
+      async function updateProduct(id, name, price, stock, categories) {
+        await fetch(`${apiBase}/products/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, price, stock, categories })
+        });
+        fetchProducts();
+      }
+
+
+
+      // Fetch orders
+      async function fetchOrders() {
+        await fetchStats();
+        const res = await fetch(`${apiBase}/orders`);
+        const orders = await res.json();
+        const tbody = document.getElementById('ordersTable');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        orders.forEach(o => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="px-4 py-2 text-sm text-gray-700">#${o.id}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${o.customer || '-'}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${o.total.toLocaleString()}đ</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${new Date(o.created_at).toLocaleString()}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // Fetch revenue
+      async function fetchRevenue() {
+        await fetchStats();
+        const res = await fetch(`${apiBase}/orders`);
+        const orders = await res.json();
+        const labels = orders.map(o => new Date(o.created_at).toLocaleDateString());
+        const data = orders.map(o => o.total);
+        new Chart(document.getElementById('revenueChart'), {
+          type: 'line',
+          data: { labels, datasets: [{ label: 'Doanh thu', data }] },
+          options: { responsive: true }
+        });
+      }
+
+      // Initialize first view
+      navOrdersLink?.click();
+    });
+  </script>
+</body>
+</html>

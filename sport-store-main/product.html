@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chi tiết sản phẩm</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+  <style>body { font-family: 'Montserrat', sans-serif; }</style>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="container mx-auto px-4 py-8">
+    <button onclick="history.back()"
+            class="mb-6 text-blue-600 hover:underline">&larr; Quay lại</button>
+    <div id="productDetail"
+         class="bg-white rounded-lg shadow p-6 max-w-3xl mx-auto"></div>
+  </div>
+
+  <script>
+    const apiBase = 'http://localhost:5000/api';
+
+    // Lấy ID từ query string và fetch chi tiết
+    async function loadProductDetail() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      const container = document.getElementById('productDetail');
+      if (!id) {
+        container.textContent = 'Không xác định được sản phẩm.';
+        return;
+      }
+      try {
+        const res = await fetch(`${apiBase}/products/${id}`);
+        if (!res.ok) throw new Error();
+        const p = await res.json();
+        container.innerHTML = `
+          <div class="flex flex-col md:flex-row gap-6">
+            <img src="${p.image_url || 'https://via.placeholder.com/600x400?text=No+Image'}"
+                 alt="${p.name}"
+                 class="w-full md:w-1/2 rounded object-cover" />
+            <div class="flex-1">
+              <h1 class="text-3xl font-bold mb-4">${p.name}</h1>
+              <p class="text-gray-700 mb-4">${p.description || ''}</p>
+              <p class="text-xl text-red-500 font-semibold mb-2">
+                ${Number(p.price).toLocaleString()}đ
+              </p>
+              <p class="text-gray-600 mb-4">Tồn kho: ${p.stock ?? '-'}</p>
+              <button onclick='addToCart({ id: ${p.id}, name: "${p.name}", price: ${p.price} })'
+                      class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                Thêm vào giỏ
+              </button>
+            </div>
+          </div>
+        `;
+      } catch {
+        container.textContent = 'Không tìm thấy sản phẩm.';
+      }
+    }
+
+    // Copy lại hàm addToCart từ index.html
+    function addToCart(product) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const idx = cart.findIndex(item => item.id === product.id);
+      if (idx !== -1) cart[idx].quantity++;
+      else cart.push({ ...product, quantity: 1 });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert(`Đã thêm ${product.name} vào giỏ hàng!`);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadProductDetail);
+  </script>
+</body>
+</html>
