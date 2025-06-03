@@ -88,11 +88,17 @@ def get_orders():
 def create_order():
     data = load_data()
     new_order = request.get_json()
+
+    # Gán ID và created_at (nếu chưa có)
     new_order['id'] = len(data['orders']) + 1
-    new_order['created_at'] = datetime.now().isoformat()
+    new_order['created_at'] = new_order.get('created_at', datetime.now().isoformat())
+
+    # Nếu payload không có phí ship riêng, có thể gán mặc định
+    if 'shippingFee' not in new_order:
+        new_order['shippingFee'] = 30000
+
     data['orders'].append(new_order)
     save_data(data)
     return jsonify({'message': 'Đơn hàng đã được lưu'}), 200
-
 if __name__ == '__main__':
     app.run(debug=True)

@@ -209,6 +209,100 @@
       ],
       "total": 1700000,
       "id": 12
+    },
+    {
+      "customerEmail": "admin@sportstore.com",
+      "customerName": "Tr\u1ea7n Quang Huy",
+      "customerPhone": "0865306456",
+      "customerAddress": "H\u00e0 \u0111\u00f4ng - H\u00e0 N\u1ed9i",
+      "note": "kh\u00f4ng c\u00f3",
+      "paymentMethod": "cod",
+      "items": [
+        {
+          "id": 3,
+          "name": "gi\u00e0y PUMA ULTRA ULTIMATE",
+          "price": 1900000,
+          "quantity": 1
+        }
+      ],
+      "subtotal": 1900000,
+      "shippingFee": 30000,
+      "total": 1930000,
+      "created_at": "2025-06-03T07:24:28.387Z",
+      "id": 13
+    },
+    {
+      "customer": "admin@sportstore.com",
+      "created_at": "2025-06-03T07:26:55.564Z",
+      "items": [
+        {
+          "id": 5,
+          "name": "Balo Adidas Adicolor",
+          "price": 840000,
+          "quantity": 1
+        }
+      ],
+      "total": 840000,
+      "id": 14,
+      "shippingFee": 30000
+    },
+    {
+      "customer": "user1@gmail.com",
+      "created_at": "2025-06-03T07:30:01.089Z",
+      "items": [
+        {
+          "categories": [
+            "balo"
+          ],
+          "id": 5,
+          "image_url": "https://down-vn.img.susercontent.com/file/vn-11134201-7r98o-lmsjn3d5j3kvf2",
+          "name": "Balo Adidas Adicolor",
+          "price": 840000,
+          "stock": 8,
+          "quantity": 1
+        }
+      ],
+      "total": 840000,
+      "id": 15,
+      "shippingFee": 30000
+    },
+    {
+      "customerEmail": "user1@gmail.com",
+      "customerName": "Tr\u1ea7n Quang Huy",
+      "customerPhone": "0865306456",
+      "customerAddress": "h\u00e0 \u0111\u00f4ng h\u00e0 \u0111\u00f4ng h\u00e0 \u0111\u00f4ng h\u00e0 n\u1ed9i",
+      "note": "",
+      "paymentMethod": "cod",
+      "items": [
+        {
+          "id": 4,
+          "name": "\u00c1o kho\u00e1c adidas Adicolor",
+          "price": 800000,
+          "quantity": 1
+        }
+      ],
+      "subtotal": 800000,
+      "shippingFee": 30000,
+      "total": 830000,
+      "created_at": "2025-06-03T07:31:16.174Z",
+      "id": 16
+    },
+    {
+      "customer": "admin@sportstore.com",
+      "created_at": "2025-06-03T10:17:16.227Z",
+      "items": [
+        {
+          "id": 2,
+          "name": "gi\u00e0y F50 304",
+          "price": 1700000,
+          "size": "40",
+          "quantity": 1,
+          "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxP2_gZctSp_GGubhp48uJSGVfx3t5cJD9cw&s"
+        }
+      ],
+      "total": 1700000,
+      "id": 17,
+      "shippingFee": 30000
     }
   ]
 }
