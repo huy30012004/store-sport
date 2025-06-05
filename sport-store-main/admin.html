@@ -3,32 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Dashboard - Sport Store</title>
+  <title>Admin Dashboard – SPORT STORE</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Google Fonts & Material Icons -->
+  <!-- Material Icons (để hiển thị icon) -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Firebase SDK (nếu bạn vẫn muốn dùng cho login) -->
+  <!-- Firebase SDK (Auth) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-
-  <!-- Chart.js (cho tab doanh thu) -->
+  <!-- Chart.js để vẽ biểu đồ doanh thu -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
-
   <style>
     body { font-family: 'Montserrat', sans-serif; }
   </style>
 </head>
 <body class="bg-gray-100 font-sans">
 
-  <!-- ========= LOGIN FORM ========= -->
+  <!-- ========= LOGIN PAGE ========= -->
   <div id="login-page" class="flex items-center justify-center h-screen">
     <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
-      <h2 class="text-2xl font-semibold mb-4 text-center">Đăng nhập Admin</h2>
+      <h2 class="text-2xl font-semibold mb-4">Đăng nhập Admin</h2>
       <input id="email" type="email" placeholder="Email" class="w-full mb-3 p-2 border rounded" />
       <input id="password" type="password" placeholder="Mật khẩu" class="w-full mb-4 p-2 border rounded" />
       <button id="login-btn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Đăng nhập</button>
@@ -36,9 +33,8 @@
     </div>
   </div>
 
-  <!-- ========== DASHBOARD ========= -->
+  <!-- ========= DASHBOARD ========= -->
   <div id="dashboard" class="hidden flex h-screen">
-
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-white shadow-md flex-shrink-0">
       <div class="p-6">
@@ -70,9 +66,9 @@
 
       <!-- Content -->
       <main class="p-6 overflow-auto flex-1">
-
-        <!-- ========== PRODUCTS SECTION ========== -->
+        <!-- ========= Products Section ========= -->
         <section id="products" class="tab-content hidden">
+          <!-- Tổng số sản phẩm -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
               <h3 class="text-lg font-semibold text-gray-700">Tổng sản phẩm</h3>
@@ -80,16 +76,70 @@
             </div>
           </div>
 
+          <!-- Form thêm sản phẩm mới -->
           <div class="bg-white rounded shadow p-4 mb-6">
             <h2 class="text-xl font-semibold mb-4">Thêm sản phẩm mới</h2>
-            <form id="addForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <input type="text" id="newName" placeholder="Tên sản phẩm" class="border p-2 rounded" required />
+            <form id="addForm" class="grid grid-cols-1 md:grid-cols-6 gap-4">
+              <!-- Tên -->
+              <input type="text" id="newName" placeholder="Tên sản phẩm" class="border p-2 rounded md:col-span-2" required />
+              <!-- Giá -->
               <input type="number" id="newPrice" placeholder="Giá (VND)" class="border p-2 rounded" required />
+              <!-- Tồn kho -->
               <input type="number" id="newStock" placeholder="Tồn kho" class="border p-2 rounded" required />
-              <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Thêm</button>
+              <!-- Image URL -->
+              <input type="text" id="newImageUrl" placeholder="Image URL" class="border p-2 rounded md:col-span-2" />
+
+              <!-- Danh mục (checkbox) -->
+              <div class="md:col-span-6">
+                <h3 class="font-medium mb-1">Danh mục:</h3>
+                <div class="flex flex-wrap gap-4">
+                  <label class="inline-flex items-center">
+                    <input type="checkbox" class="category-checkbox" value="football" />
+                    <span class="ml-2">Football</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="checkbox" class="category-checkbox" value="running" />
+                    <span class="ml-2">Running</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="checkbox" class="category-checkbox" value="lifestyle" />
+                    <span class="ml-2">Lifestyle</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="checkbox" class="category-checkbox" value="nam" />
+                    <span class="ml-2">Nam</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="checkbox" class="category-checkbox" value="nu" />
+                    <span class="ml-2">Nữ</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="checkbox" class="category-checkbox" value="treem" />
+                    <span class="ml-2">Trẻ em</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="checkbox" class="category-checkbox" value="balo" />
+                    <span class="ml-2">Balo</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="checkbox" class="category-checkbox" value="non" />
+                    <span class="ml-2">Nón</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="checkbox" class="category-checkbox" value="tuisach" />
+                    <span class="ml-2">Túi xách</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Nút Thêm -->
+              <div class="md:col-span-6">
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Thêm</button>
+              </div>
             </form>
           </div>
 
+          <!-- Danh sách sản phẩm -->
           <div class="bg-white rounded shadow p-4 mb-6">
             <h2 class="text-xl font-semibold mb-4">Danh sách sản phẩm</h2>
             <div class="overflow-auto">
@@ -100,7 +150,8 @@
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tên</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Giá</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tồn kho</th>
-                    <th class="px-4 py-2 text-sm font-medium text-gray-700">Hành động</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Danh mục</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Hành động</th>
                   </tr>
                 </thead>
                 <tbody id="productTable" class="bg-white divide-y divide-gray-200"></tbody>
@@ -109,15 +160,14 @@
           </div>
         </section>
 
-        <!-- ========== ORDERS SECTION ========== -->
+        <!-- ========= Orders Section ========= -->
         <section id="orders" class="tab-content hidden">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
-              <h3 class="text-lg font-semibold text-gray-700">Đơn hàng hôm nay</h3>
+              <h3 class="text-lg font-semibold text-gray-700">Đơn hàng mới</h3>
               <p id="statOrders" class="text-3xl font-bold text-green-600">0</p>
             </div>
           </div>
-
           <div class="bg-white rounded shadow p-4 mb-6">
             <h2 class="text-xl font-semibold mb-4">Danh sách đơn hàng</h2>
             <div class="overflow-auto">
@@ -125,11 +175,9 @@
                 <thead class="bg-gray-50">
                   <tr>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Mã đơn</th>
-                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Email KH</th>
-                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tên KH</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Khách hàng</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tổng tiền</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Ngày</th>
-                    <th class="px-4 py-2 text-center text-sm font-medium text-gray-700">Hành động</th>
                   </tr>
                 </thead>
                 <tbody id="ordersTable" class="bg-white divide-y divide-gray-200"></tbody>
@@ -138,7 +186,7 @@
           </div>
         </section>
 
-        <!-- ========== REVENUE SECTION ========== -->
+        <!-- ========= Revenue Section ========= -->
         <section id="revenue" class="tab-content hidden">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div class="bg-white p-4 rounded shadow hover:shadow-lg transition">
@@ -151,26 +199,14 @@
             <canvas id="revenueChart" class="w-full h-64"></canvas>
           </div>
         </section>
-
       </main>
     </div>
   </div>
 
-  <!-- ====== MODAL CHI TIẾT ĐƠN HÀNG ====== -->
-  <div id="orderDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl relative">
-      <button onclick="closeOrderDetail()"
-        class="absolute top-2 right-2 text-gray-600 text-xl font-bold">✕</button>
-      <div class="p-6" id="orderDetailContent">
-        <!-- JavaScript sẽ chèn chi tiết đơn ở đây -->
-      </div>
-    </div>
-  </div>
-
-  <!-- ====== SCRIPT JS ====== -->
+  <!-- ========= JAVASCRIPT ========= -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // --- Firebase Auth (nếu bạn muốn giữ) ---
+      // === Cấu hình Firebase Auth ===
       const firebaseConfig = {
         apiKey: "AIzaSyCb-v3LpPCddGtVjscSmvxpGMIxUgOMGsU",
         authDomain: "sport-store-be305.firebaseapp.com",
@@ -181,47 +217,41 @@
       };
       firebase.initializeApp(firebaseConfig);
       const auth = firebase.auth();
+      // Chỉ những email này mới có quyền vào trang admin
       const adminEmails = ['admin@sportstore.com'];
 
-      // --- Các element trên trang ---
-      const loginPage    = document.getElementById('login-page');
-      const dashboard    = document.getElementById('dashboard');
-      const loginBtn     = document.getElementById('login-btn');
-      const logoutBtn    = document.getElementById('logout-btn');
-      const loginError   = document.getElementById('login-error');
-      const adminEmailEl = document.getElementById('admin-email');
-      const navLinks     = document.querySelectorAll('.nav-link');
-      const statOrdersEl = document.getElementById('statOrders');
-      const statProductsEl = document.getElementById('statProducts');
-      const statRevenueEl  = document.getElementById('statRevenue');
-      const apiBase      = 'http://localhost:5000/api';
+      // Các element
+      const loginPage   = document.getElementById('login-page');
+      const dashboard   = document.getElementById('dashboard');
+      const loginBtn    = document.getElementById('login-btn');
+      const logoutBtn   = document.getElementById('logout-btn');
+      const loginError  = document.getElementById('login-error');
+      const adminEmail  = document.getElementById('admin-email');
+      const navLinks    = document.querySelectorAll('.nav-link');
+      const apiBase     = 'http://localhost:5000/api';
+let editId = null;
 
-      let allOrders = [];
-      let allProducts = [];
-
-      // --- 1) Xử lý Authentication ---
+      // Lắng nghe sự kiện thay đổi trạng thái Auth
       auth.onAuthStateChanged(user => {
         if (user && adminEmails.includes(user.email)) {
+          // Nếu đã login và là admin
           loginPage.classList.add('hidden');
           dashboard.classList.remove('hidden');
-          adminEmailEl.textContent = user.email;
-          // Mặc định click vào tab Đơn hàng
+          adminEmail.textContent = user.email;
+          // Mặc định hiển thị tab "Đơn hàng"
           document.querySelector('.nav-link[data-target="orders"]').click();
         } else {
+          // Nếu login nhưng không phải admin thì logout
           if (user) auth.signOut();
           loginPage.classList.remove('hidden');
           dashboard.classList.add('hidden');
         }
       });
 
+      // Xử lý login
       loginBtn?.addEventListener('click', () => {
-        const email = document.getElementById('email')?.value.trim();
+        const email    = document.getElementById('email')?.value;
         const password = document.getElementById('password')?.value;
-        if (!email || !password) {
-          loginError.textContent = "Vui lòng nhập email và mật khẩu.";
-          loginError.classList.remove('hidden');
-          return;
-        }
         auth.signInWithEmailAndPassword(email, password)
           .catch(err => {
             loginError.textContent = err.message;
@@ -229,111 +259,183 @@
           });
       });
 
+      // Xử lý logout
       logoutBtn?.addEventListener('click', () => auth.signOut());
 
-      // --- 2) Điều hướng giữa các tab ---
+      // Xử lý chuyển tab
       navLinks.forEach(link => {
-        link.addEventListener('click', async e => {
+        link.addEventListener('click', e => {
           e.preventDefault();
-          // Ẩn tất cả section trước
+          // Ẩn tất cả tab-content
           document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
-          // Hiện section được click
+          // Hiển thị tab được click
           const targetId = e.currentTarget.dataset.target;
           document.getElementById(targetId)?.classList.remove('hidden');
 
-          if (targetId === 'products') {
-            await fetchProducts();
-          }
-          if (targetId === 'orders') {
-            await fetchOrders();
-          }
-          if (targetId === 'revenue') {
-            await fetchRevenue();
-          }
+          if (targetId === 'products') fetchProducts();
+          if (targetId === 'orders')   fetchOrders();
+          if (targetId === 'revenue')  fetchRevenue();
         });
       });
 
-      // --- 3) Hàm fetchStats (đếm số lượng) ---
+      // ========= FETCH STATS SẢN PHẨM & ĐƠN HÀNG =========
       async function fetchStats() {
         const [proRes, ordRes] = await Promise.all([
           fetch(`${apiBase}/products`),
           fetch(`${apiBase}/orders`)
         ]);
-        allProducts = await proRes.json();
-        allOrders   = await ordRes.json();
+        const products = await proRes.json();
+        const orders   = await ordRes.json();
 
-        // Cập nhật thống kê Products
-        statProductsEl.textContent = allProducts.length;
+        // Cập nhật tổng sản phẩm
+        document.getElementById('statProducts').textContent = products.length;
 
-        // Thống kê đơn hàng hôm nay
+        // Đếm số đơn hàng hôm nay
         const today = new Date().toDateString();
-        const newOrders = allOrders.filter(o => {
-          if (!o.created_at) return false;
-          return new Date(o.created_at).toDateString() === today;
+        const newOrders = orders.filter(o => {
+          const d = new Date(o.created_at || '');
+          return d.toDateString() === today;
         });
-        statOrdersEl.textContent = newOrders.length;
+        document.getElementById('statOrders').textContent = newOrders.length;
 
-        // Thống kê doanh thu (tổng tất cả orders)
-        const totalRevenue = allOrders.reduce((sum, o) => sum + (o.total || 0), 0);
-        statRevenueEl.textContent = totalRevenue.toLocaleString('vi-VN') + 'đ';
+        // Tính doanh thu tổng cộng (giả sử o.total đã là số)
+        const revenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+        document.getElementById('statRevenue').textContent = revenue.toLocaleString('vi-VN') + 'đ';
       }
 
-      // --- 4) Fetch + Render Products ---
+      // ========= FETCH & RENDER DANH SÁCH SẢN PHẨM =========
       async function fetchProducts() {
         await fetchStats();
-        // allProducts đã được cập nhật
+        const res = await fetch(`${apiBase}/products`);
+        const products = await res.json();
+        renderProductTable(products);
+      }
+
+      // Hàm hiển thị bảng sản phẩm
+      function renderProductTable(products) {
         const tbody = document.getElementById('productTable');
         if (!tbody) return;
-        tbody.innerHTML = '';
-
-        allProducts.forEach(p => {
+        tbody.innerHTML = ''; // Xóa cũ
+        products.forEach(p => {
+          // Chuyển mảng categories sang chuỗi "cat1, cat2, ..."
+          const cats = (p.categories || []).join(', ');
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td class="px-4 py-2 text-sm text-gray-700">${p.id}</td>
             <td class="px-4 py-2 text-sm text-gray-700">${p.name}</td>
-            <td class="px-4 py-2 text-sm text-gray-700">${p.price.toLocaleString()}đ</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${Number(p.price).toLocaleString()}đ</td>
             <td class="px-4 py-2 text-sm text-gray-700">${p.stock}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${cats}</td>
             <td class="px-4 py-2 text-sm text-gray-700">
-              <button onclick="showEditForm(${p.id}, '${p.name}', ${p.price}, ${p.stock})" class="text-blue-600 mr-2">📝</button>
+              <button onclick="showEditForm(${p.id}, '${escapeQuotes(p.name)}', ${p.price}, ${p.stock})" class="text-blue-600 mr-2">📝</button>
               <button onclick="deleteProduct(${p.id})" class="text-red-600">🗑️</button>
             </td>`;
           tbody.appendChild(tr);
         });
       }
 
-      // Thêm sản phẩm
+      // Hàm hỗ trợ escape dấu nháy đơn trong tên (để truyền sang prompt)
+      function escapeQuotes(str) {
+        return str.replace(/'/g, "\\'");
+      }
+
+      // ========= THÊM SẢN PHẨM MỚI =========
       const addForm = document.getElementById('addForm');
       addForm?.addEventListener('submit', async e => {
         e.preventDefault();
-        const name = document.getElementById('newName')?.value.trim();
-        const price = +document.getElementById('newPrice')?.value;
-        const stock = +document.getElementById('newStock')?.value;
-        if (!name || isNaN(price) || isNaN(stock)) {
-          alert('Vui lòng điền đầy đủ tên, giá và tồn kho.');
-          return;
-        }
-        await fetch(`${apiBase}/products`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, price, stock })
+        const name     = document.getElementById('newName')?.value.trim();
+        const price    = +document.getElementById('newPrice')?.value;
+        const stock    = +document.getElementById('newStock')?.value;
+        const imageUrl = document.getElementById('newImageUrl')?.value.trim();
+
+        // Lấy tất cả checkbox đã check ra thành mảng categoriesSelected
+        const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
+        const categoriesSelected = [];
+        categoryCheckboxes.forEach(chk => {
+          if (chk.checked) categoriesSelected.push(chk.value);
         });
-        addForm.reset();
-        fetchProducts();
+
+        // Kiểm tra ít nhất 1 danh mục (nếu cần), hoặc cho phép rỗng
+        // if (!categoriesSelected.length) {
+        //   alert("Vui lòng chọn ít nhất 1 danh mục sản phẩm");
+        //   return;
+        // }
+
+        // Gửi request POST để thêm sản phẩm
+        // Sau khi đã đọc name, price, stock, imageUrl và categoriesSelected:
+if (categoriesSelected.length === 0) {
+  alert("Vui lòng chọn ít nhất một danh mục sản phẩm");
+  return;
+}
+
+if (editId) {
+  // Nếu đang ở trạng thái "Sửa" (editId != null), gọi PUT
+  await fetch(`${apiBase}/products/${editId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      price,
+      stock,
+      image_url: imageUrl,
+      categories: categoriesSelected
+    })
+  });
+} else {
+  // Nếu không phải sửa, ta đang thêm mới
+  await fetch(`${apiBase}/products`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      price,
+      stock,
+      image_url: imageUrl,
+      categories: categoriesSelected
+    })
+  });
+}
+
+// Sau khi thêm hoặc sửa xong, reset form và tải lại danh sách:
+addForm.reset();
+fetchProducts();
+editId = null;
+// Đổi lại chữ nút submit thành "Thêm"
+document.querySelector('#addForm button[type="submit"]').textContent = 'Thêm';
+
       });
 
-      // Sửa / Xóa sản phẩm
-      window.showEditForm = (id, name, price, stock) => {
-        const n = prompt('Tên sản phẩm:', name);
-        const p = prompt('Giá (VND):', price);
-        const s = prompt('Tồn kho:', stock);
-        if (n && p && s) updateProduct(id, n.trim(), +p, +s);
-      };
+      // ========= SỬA / XÓA =========
+      window.showEditForm = async (id) => {
+        const res = await fetch(`${apiBase}/products/${id}`);
+        const product = await res.json();
+
+        document.getElementById('newName').value     = product.name;
+        document.getElementById('newPrice').value    = product.price;
+        document.getElementById('newStock').value    = product.stock;
+        document.getElementById('newImageUrl').value = product.image_url || '';
+
+        // Reset tất cả checkbox
+        document.querySelectorAll('.category-checkbox').forEach(cb => cb.checked = false);
+
+        // Tick lại những danh mục có trong product.categories
+        (product.categories || []).forEach(c => {
+          const cb = document.querySelector(`.category-checkbox[value="${c}"]`);
+          if (cb) cb.checked = true;
+        });
+
+  editId = id;
+  document.querySelector('#addForm button[type="submit"]').textContent = 'Lưu';
+};
+
+
       window.deleteProduct = async id => {
         if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
           await fetch(`${apiBase}/products/${id}`, { method: 'DELETE' });
           fetchProducts();
         }
       };
+
       async function updateProduct(id, name, price, stock) {
         await fetch(`${apiBase}/products/${id}`, {
           method: 'PUT',
@@ -343,155 +445,48 @@
         fetchProducts();
       }
 
-      // --- 5) Fetch + Render Orders (với nút Xem chi tiết) ---
+      // ========= FETCH & HIỂN THỊ ĐƠN HÀNG =========
       async function fetchOrders() {
-        await fetchStats(); // cập nhật allOrders
+        await fetchStats();
+        const res = await fetch(`${apiBase}/orders`);
+        const orders = await res.json();
         const tbody = document.getElementById('ordersTable');
         if (!tbody) return;
         tbody.innerHTML = '';
-
-        allOrders.forEach(o => {
-          // Lấy data sẵn có
-          const email = o.customerEmail || o.customer || '-';
-          const name = o.customerName || '-';
-          const total = o.total
-                        ? o.total.toLocaleString('vi-VN') + 'đ'
-                        : '-';
-          const date = o.created_at
-                       ? new Date(o.created_at).toLocaleString()
-                       : '-';
-
+        orders.forEach(o => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td class="px-4 py-2 text-sm text-gray-700">#${o.id}</td>
-            <td class="px-4 py-2 text-sm text-gray-700">${email}</td>
-            <td class="px-4 py-2 text-sm text-gray-700">${name}</td>
-            <td class="px-4 py-2 text-sm text-gray-700">${total}</td>
-            <td class="px-4 py-2 text-sm text-gray-700">${date}</td>
-            <td class="px-4 py-2 text-center">
-              <button onclick="showOrderDetail(${o.id})" class="text-blue-600 hover:underline">
-                Xem chi tiết
-              </button>
-            </td>`;
+            <td class="px-4 py-2 text-sm text-gray-700">${o.customer || '-'}</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${Number(o.total).toLocaleString()}đ</td>
+            <td class="px-4 py-2 text-sm text-gray-700">${new Date(o.created_at).toLocaleString()}</td>
+          `;
           tbody.appendChild(tr);
         });
       }
 
-      // --- 6) Hàm showOrderDetail: hiển thị modal chi tiết đơn hàng ---
-      window.showOrderDetail = function(orderId) {
-        const order = allOrders.find(o => Number(o.id) === Number(orderId));
-        if (!order) {
-          alert('Không tìm thấy đơn hàng.');
-          return;
-        }
-
-        // Lấy các trường chi tiết (nếu không có thì '-')
-        const email = order.customerEmail || order.customer || '-';
-        const name  = order.customerName  || '-';
-        const phone = order.customerPhone || '-';
-        const address = order.customerAddress || '-';
-        let payment = '-';
-        if (order.paymentMethod) {
-          if (order.paymentMethod === 'online') payment = 'Thanh toán Online (PayPal)';
-          else if (order.paymentMethod === 'bank') payment = 'Chuyển khoản';
-          else payment = 'COD';
-        }
-        const note = order.note || '-';
-        const date = order.created_at
-                     ? new Date(order.created_at).toLocaleString()
-                     : '-';
-        const subtotal = order.subtotal
-                         ? order.subtotal.toLocaleString('vi-VN') + 'đ'
-                         : '0đ';
-        const shippingFee = order.shippingFee
-                            ? order.shippingFee.toLocaleString('vi-VN') + 'đ'
-                            : '0đ';
-        const total = order.total
-                      ? order.total.toLocaleString('vi-VN') + 'đ'
-                      : '0đ';
-
-        // Build danh sách sản phẩm
-        let itemsHtml = '';
-        if (Array.isArray(order.items) && order.items.length) {
-          order.items.forEach(item => {
-            const itemSubtotal = (item.price * item.quantity)
-                                  .toLocaleString('vi-VN') + 'đ';
-            // Nếu có size, hiển thị, ngược lại chỉ hiển thị số lượng
-            const sizeLine = item.size
-                              ? `<p class="text-sm text-gray-600">Size: ${item.size} × ${item.quantity}</p>`
-                              : `<p class="text-sm text-gray-600">Số lượng: ${item.quantity}</p>`;
-            itemsHtml += `
-              <div class="flex justify-between mb-2">
-                <div>
-                  <p class="font-medium">${item.name}</p>
-                  ${sizeLine}
-                  <p class="text-sm text-gray-600">Đơn giá: ${item.price.toLocaleString('vi-VN')}đ</p>
-                </div>
-                <p class="font-semibold">${itemSubtotal}</p>
-              </div>
-            `;
-          });
-        } else {
-          itemsHtml = `<p>– Không có sản phẩm –</p>`;
-        }
-
-        // Kết hợp full HTML cho modal
-        const html = `
-          <div class="space-y-4">
-            <h2 class="text-xl font-bold mb-2">Chi tiết đơn hàng #${order.id}</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p><strong>Email KH:</strong> ${email}</p>
-                <p><strong>Tên KH:</strong> ${name}</p>
-                <p><strong>SĐT:</strong> ${phone}</p>
-                <p><strong>Địa chỉ:</strong> ${address}</p>
-                <p><strong>Phương thức TT:</strong> ${payment}</p>
-                <p><strong>Ghi chú:</strong> ${note}</p>
-              </div>
-              <div>
-                <p><strong>Ngày tạo đơn:</strong> ${date}</p>
-                <p><strong>Tạm tính:</strong> ${subtotal}</p>
-                <p><strong>Phí vận chuyển:</strong> ${shippingFee}</p>
-                <p class="font-bold"><strong>Tổng cộng:</strong> ${total}</p>
-              </div>
-            </div>
-            <hr class="my-4" />
-            <h3 class="text-lg font-semibold mb-2">Danh sách sản phẩm</h3>
-            <div>
-              ${itemsHtml}
-            </div>
-          </div>
-        `;
-        document.getElementById('orderDetailContent').innerHTML = html;
-        document.getElementById('orderDetailModal').classList.remove('hidden');
-      };
-
-      // Đóng modal chi tiết
-      window.closeOrderDetail = function() {
-        document.getElementById('orderDetailModal').classList.add('hidden');
-        document.getElementById('orderDetailContent').innerHTML = '';
-      };
-
-      // --- 7) Fetch + Render Doanh thu (sử dụng Chart.js) ---
+      // ========= FETCH & VẼ BIỂU ĐỒ DOANH THU =========
       async function fetchRevenue() {
-        await fetchStats(); // cập nhật allOrders và statRevenue
-        // Tạo mảng labels và data từ allOrders
-        const labels = allOrders.map(o => {
-          return o.created_at ? new Date(o.created_at).toLocaleDateString() : '';
-        });
-        const dataArr = allOrders.map(o => o.total || 0);
-
+        await fetchStats();
+        const res = await fetch(`${apiBase}/orders`);
+        const orders = await res.json();
+        const labels = orders.map(o => new Date(o.created_at).toLocaleDateString());
+        const data = orders.map(o => o.total);
         new Chart(document.getElementById('revenueChart'), {
           type: 'line',
           data: {
             labels,
-            datasets: [{ label: 'Doanh thu', data: dataArr }]
+            datasets: [{
+              label: 'Doanh thu',
+              data,
+              tension: 0.3
+            }]
           },
           options: { responsive: true }
         });
       }
 
-      // --- 8) Khởi tạo lần đầu: click vào orders để load ngay ---
+      // Khởi tạo: mặc định click tab "Đơn hàng"
       document.querySelector('.nav-link[data-target="orders"]').click();
     });
   </script>

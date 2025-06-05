@@ -59,14 +59,19 @@
       </div>
     </main>
   </div>
-
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script>
     // ========== 1. Khởi tạo Firebase Auth ==========
     const firebaseConfig = {
-      apiKey: "AIzaSyCb-v3LpPCddGtVjscSmvxpGMIxUgOMGsU",
-      authDomain: "sport-store-be305.firebaseapp.com",
-      projectId: "sport-store-be305"
-    };
+  apiKey: "AIzaSyAvpSFwsF7ZSAiTR5UFZ-BOroOkla2SvUg",
+  authDomain: "sport-store-user.firebaseapp.com",
+  projectId: "sport-store-user",
+  storageBucket: "sport-store-user.firebasestorage.app",
+  messagingSenderId: "642253971023",
+  appId: "1:642253971023:web:df7d6e0ea36d61f5af543a",
+  measurementId: "G-QQ3J0X0Z0V"
+};
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 

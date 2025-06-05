@@ -53,6 +53,17 @@
         "balo"
       ],
       "id": 5
+    },
+    {
+      "name": "Gi\u00e0y Ch\u1ea1y B\u1ed9 Nam Adidas Adizero Boston",
+      "price": 3200000,
+      "stock": 9,
+      "image_url": "https://supersports.com.vn/cdn/shop/files/JQ2552-1.jpg?v=1733818678&width=1000",
+      "categories": [
+        "running",
+        "nam"
+      ],
+      "id": 6
     }
   ],
   "orders": [
