@@ -126,28 +126,58 @@
       </div>
 
       <div class="flex items-center space-x-4">
-        <!-- ô tìm kiếm + nút search -->
-        <div class="relative flex items-center">
-          <input id="searchInput"
-                 type="text"
-                 placeholder="Tìm kiếm sản phẩm..."
-                 class="px-4 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <button id="searchBtn"
-                  class="px-3 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 transition">
-            <i class="fas fa-search"></i>
-          </button>
-
-          <ul id="autocomplete" class="absolute bg-white shadow mt-1 w-full hidden"></ul>
-        </div>
-
-        <a href="cart.html" class="relative text-gray-800 hover:text-blue-600">
-          <i class="fas fa-shopping-cart text-xl"></i>
-          <span id="cart-count"
-                class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-            0
-          </span>
-        </a>
+      <!-- 1) Ô tìm kiếm -->
+      <div class="relative flex items-center">
+        <input id="searchInput" … />
+        <button id="searchBtn" …><i class="fas fa-search"></i></button>
+        <ul id="autocomplete" class="absolute bg-white shadow mt-1 w-full hidden"></ul>
       </div>
+
+      <!-- 2) Icon “Tài khoản” với dropdown -->
+      <div class="relative group">
+        <a href="#"
+           id="accountIcon"
+           class="text-gray-800 hover:text-blue-600 px-2 py-1">
+          <i class="fas fa-user-circle text-xl"></i>
+        </a>
+        <div id="accountDropdown"
+             class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-md
+                    opacity-0 invisible group-hover:opacity-100 group-hover:visible
+                    transition-opacity z-50">
+          <!-- Link đổi mật khẩu -->
+          <a href="change-password.html"
+             class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+            Đổi mật khẩu
+          </a>
+          <!-- Link xem trạng thái đơn -->
+          <a href="order-status.html"
+             class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+            Xem trạng thái đơn
+          </a>
+          <!-- Link xem lịch sử mua hàng -->
+          <a href="purchase-history.html"
+             class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+            Lịch sử mua hàng
+          </a>
+          <hr class="my-1 border-gray-200" />
+          <!-- Nút Đăng xuất -->
+          <button id="logoutBtn"
+                  class="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">
+            Đăng xuất
+          </button>
+        </div>
+      </div>
+
+      <!-- 3) Icon Giỏ hàng -->
+      <a href="cart.html" class="relative text-gray-800 hover:text-blue-600 px-2 py-1">
+        <i class="fas fa-shopping-cart text-xl"></i>
+        <span id="cart-count"
+              class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          0
+        </span>
+      </a>
+    </div>
+  </div>
 
     </div>
   </header>
@@ -255,49 +285,62 @@
     <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
   </section>
 
-  <!-- Quick View Modal -->
-  <div id="quickViewModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-xl relative">
-      <button class="absolute top-2 right-2 text-gray-600" onclick="toggleQuickView(false)">✕</button>
-      <div class="flex flex-col md:flex-row">
-        <!-- Ảnh sản phẩm -->
-        <img id="quickViewImg" src="" class="w-full md:w-1/2 h-64 object-cover rounded-t-lg md:rounded-l-lg" />
+ <!-- Quick View Modal -->
+<div id="quickViewModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl relative">
+    <!-- Nút đóng -->
+    <button class="absolute top-2 right-2 text-gray-600 hover:text-gray-800" onclick="toggleQuickView(false)">
+      ✕
+    </button>
+    <div class="flex flex-col md:flex-row">
+      <!-- Ảnh sản phẩm -->
+      <img id="quickViewImg"
+           src=""
+           alt="Hình sản phẩm"
+           class="w-full md:w-1/2 h-64 object-cover rounded-t-lg md:rounded-l-lg" />
 
-        <!-- Nội dung bên phải -->
-        <div class="p-6 flex-1 space-y-4">
-          <h3 id="quickViewName" class="text-2xl font-semibold"></h3>
-          <p id="quickViewDesc" class="text-gray-700"></p>
-          <p id="quickViewPrice" class="text-red-500 font-bold"></p>
+      <!-- Nội dung bên phải -->
+      <div class="p-6 flex-1 flex flex-col">
+        <h3 id="quickViewName" class="text-2xl font-semibold mb-2"></h3>
 
-          <!-- Dropdown chọn SIZE -->
-          <div>
-            <label for="selectSize" class="block font-medium text-gray-700 mb-1">Chọn Size:</label>
-            <select id="selectSize" class="border p-2 rounded w-full max-w-xs">
-              <!-- Các option sẽ được khởi tạo động trong JS -->
-            </select>
-          </div>
-
-          <!-- Dropdown chọn QUANTITY -->
-          <div>
-            <label for="selectQty" class="block font-medium text-gray-700 mb-1">Số lượng:</label>
-            <select id="selectQty" class="border p-2 rounded w-full max-w-xs">
-              <!-- Tạm khởi tạo từ 1 → 10 -->
-              <script>
-                for (let i = 1; i <= 10; i++) {
-                  document.write(`<option value="${i}">${i}</option>`);
-                }
-              </script>
-            </select>
-          </div>
-
-          <!-- Button Thêm vào giỏ -->
-          <button id="btnAddToCart" class="bg-blue-600 text-white px-6 py-2 rounded block">
-            Thêm vào giỏ
-          </button>
+        <!-- Ô mô tả có scroll -->
+        <div id="quickViewDescContainer"
+             class="border rounded p-3 mb-4 max-h-48 overflow-y-auto text-gray-700">
+          <p id="quickViewDesc"></p>
         </div>
+
+        <p id="quickViewPrice" class="text-red-500 font-bold mb-4"></p>
+
+        <!-- Chọn Size -->
+        <div class="mb-4">
+          <label for="selectSize" class="block font-medium text-gray-700 mb-1">Chọn Size:</label>
+          <select id="selectSize" class="border p-2 rounded w-full max-w-xs">
+            <!-- JS sẽ fill options -->
+          </select>
+        </div>
+
+        <!-- Chọn Số lượng -->
+        <div class="mb-6">
+          <label for="selectQty" class="block font-medium text-gray-700 mb-1">Số lượng:</label>
+          <select id="selectQty" class="border p-2 rounded w-full max-w-xs">
+            <script>
+              for (let i = 1; i <= 10; i++) {
+                document.write(`<option value="${i}">${i}</option>`);
+              }
+            </script>
+          </select>
+        </div>
+
+        <!-- Nút Thêm vào giỏ -->
+        <button id="btnAddToCart"
+                class="mt-auto bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+          Thêm vào giỏ
+        </button>
       </div>
     </div>
   </div>
+</div>
+
 
 
   <!-- Newsletter Banner -->
@@ -653,5 +696,61 @@
     window.openQuickView = openQuickView;
     window.toggleQuickView = toggleQuickView;
   </script>
+    <!-- … các phần HTML khác của index.html … -->
+
+  <!-- Firebase App (compat) + Auth (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script>
+    // === 1) Firebase Configuration của project “sport-store-user” ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyAvpSFwsF7ZSAiTR5UFZ-BOroOkla2SvUg",
+      authDomain: "sport-store-user.firebaseapp.com",
+      projectId: "sport-store-user",
+      storageBucket: "sport-store-user.firebasestorage.app",
+      messagingSenderId: "642253971023",
+      appId: "1:642253971023:web:df7d6e0ea36d61f5af543a",
+      measurementId: "G-QQ3J0X0Z0V"
+    };
+
+    // === 2) Initialize Firebase App & Auth với tên “userApp” ===
+    firebase.initializeApp(firebaseConfig, "userApp");
+    const userAuth = firebase.auth(firebase.app("userApp"));
+
+    // === 3) Quản lý hiển thị dropdown “Tài khoản” ===
+    // - Nếu chưa đăng nhập: click vào icon user => chuyển về login.html, ẩn dropdown
+    // - Nếu đã đăng nhập: cho hover-show dropdown bình thường
+    userAuth.onAuthStateChanged(user => {
+      const accountIcon     = document.getElementById('accountIcon');
+      const accountDropdown = document.getElementById('accountDropdown');
+
+      if (!user) {
+        // Chưa login → click icon user sẽ đưa về login.html
+        accountIcon.onclick = e => {
+          e.preventDefault();
+          window.location.href = 'login.html';
+        };
+        // Ẩn dropdown khi chưa login
+        accountDropdown.style.display = 'none';
+      } else {
+        // Đã login → xóa onclick, cho phép hover-show dropdown
+        accountIcon.onclick = null;
+        accountDropdown.style.display = ''; // Hiển thị theo CSS của .group-hover
+      }
+    });
+
+    // === 4) Xử lý nút “Đăng xuất” ===
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      userAuth.signOut()
+        .then(() => {
+          // Sau khi logout, redirect về trang login
+          window.location.href = 'login.html';
+        })
+        .catch(err => {
+          console.error('Lỗi khi đăng xuất:', err);
+        });
+    });
+  </script>
+
 </body>
 </html>

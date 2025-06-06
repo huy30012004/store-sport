@@ -89,6 +89,12 @@
               <!-- Image URL -->
               <input type="text" id="newImageUrl" placeholder="Image URL" class="border p-2 rounded md:col-span-2" />
 
+              <!-- Mô tả sản phẩm -->
+              <textarea id="newDescription"
+                        placeholder="Mô tả sản phẩm"
+                        class="border p-2 rounded md:col-span-6"
+                        rows="3"></textarea>
+
               <!-- Danh mục (checkbox) -->
               <div class="md:col-span-6">
                 <h3 class="font-medium mb-1">Danh mục:</h3>
@@ -178,6 +184,7 @@
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Khách hàng</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Tổng tiền</th>
                     <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Ngày</th>
+                    <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Chi tiết</th>
                   </tr>
                 </thead>
                 <tbody id="ordersTable" class="bg-white divide-y divide-gray-200"></tbody>
@@ -347,6 +354,7 @@ let editId = null;
         const price    = +document.getElementById('newPrice')?.value;
         const stock    = +document.getElementById('newStock')?.value;
         const imageUrl = document.getElementById('newImageUrl')?.value.trim();
+        const description = document.getElementById('newDescription').value.trim();
 
         // Lấy tất cả checkbox đã check ra thành mảng categoriesSelected
         const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
@@ -378,6 +386,7 @@ if (editId) {
       price,
       stock,
       image_url: imageUrl,
+      description,
       categories: categoriesSelected
     })
   });
@@ -414,6 +423,7 @@ document.querySelector('#addForm button[type="submit"]').textContent = 'Thêm';
         document.getElementById('newPrice').value    = product.price;
         document.getElementById('newStock').value    = product.stock;
         document.getElementById('newImageUrl').value = product.image_url || '';
+        document.getElementById('newDescription').value = product.description || '';
 
         // Reset tất cả checkbox
         document.querySelectorAll('.category-checkbox').forEach(cb => cb.checked = false);
@@ -447,23 +457,30 @@ document.querySelector('#addForm button[type="submit"]').textContent = 'Thêm';
 
       // ========= FETCH & HIỂN THỊ ĐƠN HÀNG =========
       async function fetchOrders() {
-        await fetchStats();
-        const res = await fetch(`${apiBase}/orders`);
-        const orders = await res.json();
-        const tbody = document.getElementById('ordersTable');
-        if (!tbody) return;
-        tbody.innerHTML = '';
-        orders.forEach(o => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td class="px-4 py-2 text-sm text-gray-700">#${o.id}</td>
-            <td class="px-4 py-2 text-sm text-gray-700">${o.customer || '-'}</td>
-            <td class="px-4 py-2 text-sm text-gray-700">${Number(o.total).toLocaleString()}đ</td>
-            <td class="px-4 py-2 text-sm text-gray-700">${new Date(o.created_at).toLocaleString()}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      }
+      const res = await fetch(`${apiBase}/orders`);
+      const orders = await res.json();
+      const tbody = document.getElementById('ordersTable');
+      tbody.innerHTML = '';
+
+      orders.forEach(o => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-4 py-2 text-sm text-gray-700">#${o.id}</td>
+          <!-- Chuyển từ o.customer sang o.customer || o.customerEmail -->
+          <td class="px-4 py-2 text-sm text-gray-700">${o.customer || o.customerEmail || '-'}</td>
+          <td class="px-4 py-2 text-sm text-gray-700">${Number(o.total).toLocaleString()}đ</td>
+          <td class="px-4 py-2 text-sm text-gray-700">${new Date(o.created_at).toLocaleString()}</td>
+          <td class="px-4 py-2 text-sm text-gray-700">
+            <a href="order-detail.html?id=${o.id}"
+              class="text-blue-600 hover:underline">
+              Xem
+            </a>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
 
       // ========= FETCH & VẼ BIỂU ĐỒ DOANH THU =========
       async function fetchRevenue() {

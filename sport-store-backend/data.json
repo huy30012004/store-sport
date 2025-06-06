@@ -9,6 +9,7 @@
         "football",
         "giay"
       ],
+      "reviews": [],
       "id": 1
     },
     {
@@ -17,10 +18,11 @@
       "stock": 7,
       "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxP2_gZctSp_GGubhp48uJSGVfx3t5cJD9cw&s",
       "categories": [
-        "football",
-        "giay"
+        "football"
       ],
-      "id": 2
+      "reviews": [],
+      "id": 2,
+      "description": "Gi\u00e0y \u0111\u00e1 b\u00f3ng si\u00eau nh\u1eb9 gi\u00fap b\u1ea1n b\u1ee9t t\u1ed1c t\u1ed1i \u0111a tr\u00ean m\u1eb7t s\u00e2n c\u1ecf nh\u00e2n t\u1ea1o.\nKhai ph\u00e1 t\u1ed1c \u0111\u1ed9 \u0111\u1ec3 th\u1ec3 hi\u1ec7n tr\u1ecdn v\u1eb9n c\u00e1 t\u00ednh tr\u00ean s\u00e2n c\u1ecf. C\u1ea3m nh\u1eadn nh\u1ecbp \u0111\u1eadp t\u1ed1c \u0111\u1ed9 c\u00f9ng gi\u00e0y \u0111\u00e1 b\u00f3ng adidas F50 \u2013 sinh ra \u0111\u1ec3 d\u1eabn \u0111\u1ea7u m\u1ecdi cu\u1ed9c \u0111ua. Thu h\u00fat m\u1ecdi \u00e1nh nh\u00ecn v\u1edbi h\u1ecda ti\u1ebft Sprintgrid \u1ea5n t\u01b0\u1ee3ng, ph\u1ea7n th\u00e2n gi\u00e0y Fiberskin c\u1ee7a d\u00f2ng gi\u00e0y League t\u00edch h\u1ee3p l\u01b0\u1ee1i g\u00e0 Tunnel Tongue linh ho\u1ea1t, \u0111\u1ea3m b\u1ea3o \u0111\u1ed9 \u00f4m kh\u00edt v\u1eefng ch\u1eafc trong t\u1eebng pha b\u1ee9t t\u1ed1c. \u0110\u1ec7m gi\u1eefa EVA k\u1ebft h\u1ee3p c\u00f9ng \u0111\u1ebf ngo\u00e0i cao su c\u00f3 gai mang \u0111\u1ebfn s\u1ef1 \u00eam \u00e1i v\u00e0 b\u00e1m ch\u1eafc, gi\u00fap b\u1ea1n b\u1ee9t t\u1ed1c t\u1ef1 tin tr\u00ean m\u1eb7t s\u00e2n c\u1ecf nh\u00e2n t\u1ea1o."
     },
     {
       "name": "gi\u00e0y PUMA ULTRA ULTIMATE",
@@ -31,6 +33,7 @@
         "football",
         "giay"
       ],
+      "reviews": [],
       "id": 3
     },
     {
@@ -42,6 +45,7 @@
         "nu",
         "quanao"
       ],
+      "reviews": [],
       "id": 4
     },
     {
@@ -52,6 +56,7 @@
       "categories": [
         "balo"
       ],
+      "reviews": [],
       "id": 5
     },
     {
@@ -63,6 +68,7 @@
         "running",
         "nam"
       ],
+      "reviews": [],
       "id": 6
     }
   ],
@@ -314,6 +320,94 @@
       "total": 1700000,
       "id": 17,
       "shippingFee": 30000
+    },
+    {
+      "customerEmail": "admin@sportstore.com",
+      "customerName": "Tr\u1ea7n Quang Huy",
+      "customerPhone": "0865306456",
+      "customerAddress": "H\u00e0 \u0111\u00f4ng - H\u00e0 N\u1ed9i",
+      "note": "",
+      "paymentMethod": "cod",
+      "items": [
+        {
+          "id": 2,
+          "name": "gi\u00e0y F50 304",
+          "price": 1700000,
+          "size": "38",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 1700000,
+      "shippingFee": 30000,
+      "total": 1730000,
+      "created_at": "2025-06-06T11:55:14.064Z",
+      "id": 18
+    },
+    {
+      "customerEmail": "admin@sportstore.com",
+      "customerName": "Tr\u1ea7n Quang Huy",
+      "customerPhone": "0865306456",
+      "customerAddress": "H\u00e0 \u0111\u00f4ng - H\u00e0 N\u1ed9i",
+      "note": "",
+      "paymentMethod": "cod",
+      "items": [
+        {
+          "id": 2,
+          "name": "gi\u00e0y F50 304",
+          "price": 1700000,
+          "size": "38",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 1700000,
+      "shippingFee": 30000,
+      "total": 1730000,
+      "created_at": "2025-06-06T11:59:43.406Z",
+      "id": 19
+    },
+    {
+      "customerEmail": "user1@gmail.com",
+      "customerName": "tr\u1ea7n quang huy",
+      "customerPhone": "0865306456",
+      "customerAddress": "H\u00e0 \u0111\u00f4ng - H\u00e0 N\u1ed9i",
+      "note": "",
+      "paymentMethod": "cod",
+      "items": [
+        {
+          "id": 2,
+          "name": "gi\u00e0y F50 304",
+          "price": 1700000,
+          "size": "38",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 1700000,
+      "shippingFee": 30000,
+      "total": 1730000,
+      "created_at": "2025-06-06T12:25:36.467Z",
+      "id": 20
+    },
+    {
+      "customerEmail": "user1@gmail.com",
+      "customerName": "tr\u1ea7n quang huy",
+      "customerPhone": "0865306456",
+      "customerAddress": "H\u00e0 \u0111\u00f4ng - H\u00e0 N\u1ed9i",
+      "note": "",
+      "paymentMethod": "cod",
+      "items": [
+        {
+          "id": 2,
+          "name": "gi\u00e0y F50 304",
+          "price": 1700000,
+          "size": "38",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 1700000,
+      "shippingFee": 30000,
+      "total": 1730000,
+      "created_at": "2025-06-06T13:44:05.260Z",
+      "id": 21
     }
   ]
 }

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lịch sử mua hàng</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background-color: #f0f2f5; }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    th, td {
+      padding: 12px 8px;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+    }
+    th {
+      background-color: #f7fafc;
+    }
+    .status-processing { color: #e67e22; font-weight: bold; }
+    .status-shipped    { color: #3498db; font-weight: bold; }
+    .status-completed  { color: #2ecc71; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="text-2xl font-bold mb-4">Lịch sử mua hàng</h2>
+    <div id="historyContainer">
+      <p class="text-gray-500">Đang tải lịch sử…</p>
+    </div>
+  </div>
+
+  <!-- Firebase App + Auth-compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script>
+    // 1) Cấu hình Firebase (giống các trang khác)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAvpSFwsF7ZSAiTR5UFZ-BOroOkla2SvUg",
+      authDomain: "sport-store-user.firebaseapp.com",
+      projectId: "sport-store-user",
+      storageBucket: "sport-store-user.firebasestorage.app",
+      messagingSenderId: "642253971023",
+      appId: "1:642253971023:web:df7d6e0ea36d61f5af543a",
+      measurementId: "G-QQ3J0X0Z0V"
+    };
+    firebase.initializeApp(firebaseConfig, "userApp");
+    const auth = firebase.auth(firebase.app("userApp"));
+
+    // 2) Nếu user chưa login → redirect về login.html
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        loadOrderHistory(user.email);
+      }
+    });
+
+    // 3) Lấy và hiển thị toàn bộ đơn của user
+    async function loadOrderHistory(email) {
+      const container = document.getElementById("historyContainer");
+      container.innerHTML = '<p class="text-gray-500">Đang tải lịch sử…</p>';
+
+      try {
+        const res = await fetch("http://localhost:5000/api/orders");
+        if (!res.ok) throw new Error("Không lấy được đơn hàng từ server");
+        const ordersArr = await fetch("http://localhost:5000/api/orders").then(r => r.json());
+
+// 2) Lọc trực tiếp trên mảng trả về (không cần data.orders)
+let orders = ordersArr.filter(o => {
+  const storedEmail = (o.customer || o.customerEmail || "").toLowerCase();
+  return storedEmail === email.toLowerCase();
+});
+
+        if (!orders.length) {
+          container.innerHTML = '<p class="text-gray-500">Bạn chưa có đơn hàng nào.</p>';
+          return;
+        }
+
+        // Sắp xếp giảm dần theo created_at (hoặc timestamp)
+        orders.sort((a, b) => new Date(b.created_at || b.timestamp) - new Date(a.created_at || a.timestamp));
+
+        // Tạo bảng hiển thị
+        let html = `
+          <table>
+            <thead>
+              <tr>
+                <th>Mã Đơn</th>
+                <th>Ngày Đặt</th>
+                <th>Tổng Tiền</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        orders.forEach(o => {
+          const dt = new Date(o.created_at || o.timestamp);
+          const formatted = dt.toLocaleString("vi-VN");
+
+          let cls = "";
+          if (o.status === "processing") cls = "status-processing";
+          else if (o.status === "shipped") cls = "status-shipped";
+          else if (o.status === "completed") cls = "status-completed";
+
+          html += `
+            <tr>
+              <td>#${o.id}</td>
+              <td>${formatted}</td>
+              <td>
+                ${Number(o.total || o.subtotal + (o.shippingFee || 0)).toLocaleString("vi-VN")}đ
+              </td>
+              <td class="${cls}">${o.status || ""}</td>
+            </tr>
+          `;
+        });
+        html += `
+            </tbody>
+          </table>
+        `;
+        container.innerHTML = html;
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = `<p class="text-red-500">Lỗi khi tải lịch sử: ${err.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
