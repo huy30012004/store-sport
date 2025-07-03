@@ -126,12 +126,21 @@
       </div>
 
       <div class="flex items-center space-x-4">
-      <!-- 1) Ô tìm kiếm -->
-      <div class="relative flex items-center">
-        <input id="searchInput" … />
-        <button id="searchBtn" …><i class="fas fa-search"></i></button>
-        <ul id="autocomplete" class="absolute bg-white shadow mt-1 w-full hidden"></ul>
-      </div>
+      <div class="relative flex items-center w-full max-w-sm">
+  <input id="searchInput"
+         type="text"
+         placeholder="Tìm kiếm sản phẩm..."
+         class="w-full border border-gray-300 rounded-full px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+  <button id="searchBtn"
+          class="absolute right-2 text-gray-500 hover:text-blue-600">
+    <i class="fas fa-search"></i>
+  </button>
+
+  <!-- Gợi ý tự động -->
+  <ul id="autocomplete" class="absolute top-full left-0 bg-white shadow mt-1 w-full hidden rounded z-10"></ul>
+</div>
+
 
       <!-- 2) Icon “Tài khoản” với dropdown -->
       <div class="relative group">
@@ -141,9 +150,11 @@
           <i class="fas fa-user-circle text-xl"></i>
         </a>
         <div id="accountDropdown"
-             class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-md
-                    opacity-0 invisible group-hover:opacity-100 group-hover:visible
-                    transition-opacity z-50">
+       class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg
+              opacity-0 scale-95 invisible group-hover:opacity-100 group-hover:scale-100 group-hover:visible
+              transition-all duration-200 ease-out
+              hover:opacity-100 hover:scale-100 hover:visible z-50">
+
           <!-- Link đổi mật khẩu -->
           <a href="change-password.html"
              class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
@@ -189,7 +200,7 @@
         <!-- Slide #1 -->
         <div class="swiper-slide">
           <img
-            src="https://image.dienthoaivui.com.vn/x,webp,q90/https://dashboard.dienthoaivui.com.vn/uploads/dashboard/editor_upload/hinh-nen-bong-da-62.jpg"
+            src="https://i.ibb.co/tMvcZnCv/z6725126171638-7512be71191322d4c7cf9517c5273119.jpg"
             alt="Banner 1" />
           <div class="absolute inset-0 flex items-center justify-center">
             <button class="bg-white text-black px-6 py-3 rounded shadow hover:bg-gray-100 transition">
@@ -228,7 +239,7 @@
         class="w-full h-full object-cover filter blur-lg opacity-50" />
     </div>
     <div class="container mx-auto flex justify-around">
-      <a href="#" class="flex flex-col items-center">
+      <a href="#" class="filter-cat flex flex-col items-center" data-category="giay">
         <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow">
           <img
             src="https://png.pngtree.com/png-clipart/20230419/original/pngtree-sneakers-line-icon-png-image_9066569.png"
@@ -237,7 +248,7 @@
         </div>
         <span class="mt-2 text-gray-700">Giày</span>
       </a>
-      <a href="#" class="flex flex-col items-center">
+      <a href="#" class="filter-cat flex flex-col items-center" data-category="quanao">
         <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow">
           <img
             src="https://png.pngtree.com/png-clipart/20191120/original/pngtree-sweater-line-icon-vector-png-image_5074684.jpg"
@@ -246,7 +257,7 @@
         </div>
         <span class="mt-2 text-gray-700">Quần áo</span>
       </a>
-      <a href="#" class="flex flex-col items-center">
+      <a href="#" class="filter-cat flex flex-col items-center" data-category="balo">
         <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow">
           <img
             src="https://media.istockphoto.com/id/1159322957/vi/vec-to/bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-schoolbag-h%C3%ACnh-minh-h%E1%BB%8Da-%C4%91%C6%B0%E1%BB%9Dng-m%E1%BB%8Fng-hi%E1%BB%87n-%C4%91%E1%BA%A1i-h%E1%BB%A3p-th%E1%BB%9Di-trang-c%E1%BB%A7a-m%E1%BB%99t-chi%E1%BA%BFc-t%C3%BAi-ba.jpg?s=612x612&w=0&k=20&c=c-H--kS3PggHEsWPWEPqUIKKh6t0gCEhGDs1UWNRtxU="
@@ -255,7 +266,7 @@
         </div>
         <span class="mt-2 text-gray-700">Balo</span>
       </a>
-      <a href="#" class="flex flex-col items-center">
+      <a href="#" class="filter-cat flex flex-col items-center" data-category="bong">
         <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow">
           <img
             src="https://img.lovepik.com/png/20231001/cartoon-black-and-white-football-logo_50410_wh1200.png"
@@ -343,20 +354,44 @@
 
 
 
-  <!-- Newsletter Banner -->
-  <section class="bg-blue-600 text-white py-12">
-    <div class="container mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-4">Đăng ký nhận tin</h2>
-      <p class="mb-6">Nhận thông tin ưu đãi và sản phẩm mới nhất</p>
-      <input id="newsletterEmail"
-             type="email"
-             placeholder="Nhập email của bạn"
-             class="px-4 py-2 rounded-l w-1/3 focus:outline-none" />
-      <button id="newsletterBtn" class="bg-white text-blue-600 px-6 py-2 rounded-r">
-        Đăng ký
-      </button>
-    </div>
-  </section>
+  <section class="bg-blue-600 text-black py-12">
+  <div class="container mx-auto text-center">
+    <h2 class="text-3xl font-bold mb-4">Đăng ký nhận tin</h2>
+    <p class="mb-6">Nhận thông tin ưu đãi và sản phẩm mới nhất</p>
+    
+    <input id="newsletterEmail"
+           type="email"
+           placeholder="Nhập email của bạn"
+           class="px-4 py-2 rounded-l w-1/3 focus:outline-none" />
+    
+    <button id="newsletterBtn" class="bg-white text-blue-600 px-6 py-2 rounded-r">
+      Đăng ký
+    </button>
+
+    <!-- Thông báo -->
+    <p id="newsletterMessage" class="mt-4 text-black-500 font-semibold hidden">
+      Đăng ký thành công!
+    </p>
+  </div>
+</section>
+
+<script>
+  document.getElementById('newsletterBtn').addEventListener('click', function () {
+    const email = document.getElementById('newsletterEmail').value;
+    const message = document.getElementById('newsletterMessage');
+
+    if (email.trim() === '') {
+      alert('Vui lòng nhập email!');
+      return;
+    }
+
+    message.classList.remove('hidden');
+    message.textContent = 'Đăng ký thành công!';
+    document.getElementById('newsletterEmail').value = '';
+  });
+</script>
+
+  
 
   <!-- Footer -->
   <footer class="bg-gray-800 text-gray-200 py-10">
@@ -533,43 +568,92 @@
       loadProducts();
     });
 
-    function renderProducts(products) {
-      currentProducts = products.slice();
-      const grid = document.getElementById('productGrid');
-      if (!products.length) {
-        grid.innerHTML = `
-          <p class="text-center col-span-3 text-gray-500">
-            Không tìm thấy sản phẩm nào.
-          </p>`;
-        return;
-      }
-      grid.innerHTML = products.map(p => `
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
-          <div class="relative group">
-            <img src="${p.image_url}" alt="${p.name}" class="w-full h-64 object-cover"/>
+  function renderProducts(products) {
+  // 1) Sort: đẩy sản phẩm giảm giá lên đầu (giảm dần %)
+  products.sort((a, b) => (b.discount || 0) - (a.discount || 0));
+
+  currentProducts = products.slice();
+  const grid = document.getElementById('productGrid');
+
+  if (!products.length) {
+    grid.innerHTML = `
+      <p class="text-center col-span-3 text-gray-500">
+        Không tìm thấy sản phẩm nào.
+      </p>`;
+    return;
+  }
+
+  // 2) Map từng sản phẩm thành card
+  grid.innerHTML = products.map(p => {
+    const price      = Number(p.price);
+    const discount   = p.discount || 0;
+    const finalPrice = Math.round(price * (100 - discount) / 100);
+
+    // sao trung bình
+    const avg       = Math.round(p.averageRating || 0);
+    const cnt       = p.reviewCount   || 0;
+    const starsHtml = Array.from({ length: 5 }, (_, i) =>
+      `<i class="fas fa-star ${i < avg ? 'text-yellow-400' : 'text-gray-300'} mr-0.5"></i>`
+    ).join('');
+
+    return `
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+        <div class="relative group">
+          ${discount > 0 ? `
+            <span class="absolute top-2 left-2 bg-red-600 text-white px-2 py-1 text-xs rounded">
+              Giảm ${discount}%
+            </span>` : ``}
+          <img src="${p.image_url}" alt="${p.name}" class="w-full h-64 object-cover"/>
+          <button onclick="openQuickView(${p.id})"
+                  class="opacity-0 group-hover:opacity-100 absolute top-2 right-2 bg-white p-2 rounded-full shadow">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+        <div class="p-4 flex flex-col justify-between">
+          <h3 class="font-semibold text-lg mb-1">${p.name}</h3>
+
+          <!-- sao trung bình -->
+          <div class="flex items-center mb-2">
+            <span class="avg-stars cursor-pointer" data-id="${p.id}">
+              ${starsHtml}
+            </span>
+            <span class="ml-1 text-sm text-gray-600">(${cnt})</span>
+          </div>
+
+          <!-- giá -->
+          ${discount > 0
+            ? `<div class="mb-4">
+                 <span class="text-red-500 font-bold text-xl">
+                   ${finalPrice.toLocaleString('vi-VN')}đ
+                 </span>
+                 <span class="line-through text-gray-400 ml-2">
+                   ${price.toLocaleString('vi-VN')}đ
+                 </span>
+               </div>`
+            : `<span class="text-red-500 font-bold mb-4">
+                 ${price.toLocaleString('vi-VN')}đ
+               </span>`}
+
+          <!-- nút -->
+          <div class="flex justify-between items-center">
             <button onclick="openQuickView(${p.id})"
-                    class="opacity-0 group-hover:opacity-100 absolute top-2 right-2 bg-white p-2 rounded-full shadow">
-              <i class="fas fa-search"></i>
+                    class="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700">
+              <i class="fas fa-shopping-cart"></i>
+            </button>
+            <button onclick="openQuickView(${p.id})"
+                    class="bg-gray-200 text-gray-800 px-3 py-1 rounded hover:bg-gray-300 text-sm">
+              Xem chi tiết
             </button>
           </div>
-          <div class="p-4 flex flex-col justify-between">
-            <h3 class="font-semibold text-lg mb-2">${p.name}</h3>
-            <span class="text-red-500 font-bold mb-2">${Number(p.price).toLocaleString('vi-VN')}đ</span>
-            <div class="flex justify-between items-center">
-              <!-- Nút giỏ hàng giờ gọi openQuickView để bắt buộc chọn size/qty -->
-              <button onclick="openQuickView(${p.id})"
-                      class="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700">
-                <i class="fas fa-shopping-cart"></i>
-              </button>
-              <button onclick="openQuickView(${p.id})"
-                      class="bg-gray-200 text-gray-800 px-3 py-1 rounded hover:bg-gray-300 text-sm">
-                Xem chi tiết
-              </button>
-            </div>
-          </div>
         </div>
-      `).join('');
-    }
+      </div>
+    `;
+  }).join('');
+
+  // 3) Sau khi render xong, nếu bạn có hàm bindAvgStars để show comment, hãy gọi nó ở đây:
+  if (typeof bindAvgStars === 'function') bindAvgStars();
+}
+
 
     // ===== G. Search + Autocomplete =====
     let timeout;
@@ -598,7 +682,30 @@
         }
       }, 300);
     });
-
+  // ===== H. Bind click lên sao trung bình để show bình luận =====
+  // Gọi mỗi khi bạn vừa render xong products
+  function bindAvgStars() {
+    document.querySelectorAll('.avg-stars').forEach(el => {
+      el.addEventListener('click', async () => {
+        const pid = el.dataset.id;
+        try {
+          const res = await fetch(`${apiBase}/products/${pid}/reviews`);
+          const { reviews } = await res.json();
+          if (!reviews.length) {
+            return alert('Sản phẩm chưa có đánh giá nào.');
+          }
+          const msg = reviews.map(r => {
+            const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+            return `${stars}\n${r.comment || '(không có bình luận)'}\n— ${r.name}`;
+          }).join('\n\n');
+          alert(msg);
+        } catch (e) {
+          console.error(e);
+          alert('Không tải được bình luận.');
+        }
+      });
+    });
+  }
     document.getElementById('searchInput').addEventListener('keydown', e => {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -684,7 +791,25 @@
         }
       });
     });
-
+document.querySelectorAll('.filter-cat').forEach(el => {
+    el.addEventListener('click', async e => {
+      e.preventDefault();
+      const cat = el.dataset.category;
+      try {
+        // gọi API lấy đúng category
+        const res = await fetch(`${apiBase}/products?category=${cat}`);
+        if (!res.ok) throw new Error('Không lấy được danh sách');
+        const prods = await res.json();
+        // vẽ lại grid
+        renderProducts(prods);
+        // bind lại callback cho sao trung bình (nếu có)
+        if (typeof bindAvgStars === 'function') bindAvgStars();
+      } catch (err) {
+        console.error('Lỗi khi lọc:', err);
+        alert('Không thể load sản phẩm. Vui lòng thử lại.');
+      }
+    });
+  });
     // ===== J. Khởi tạo khi load trang =====
     document.addEventListener('DOMContentLoaded', () => {
       loadProducts();
@@ -751,6 +876,13 @@
         });
     });
   </script>
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<df-messenger
+  intent="WELCOME"
+  chat-title="Chatbot"
+  agent-id="98f2adde-e1e3-40c4-8763-f014701bc667"
+  language-code="vi"
+></df-messenger>
 
 </body>
 </html>
