@@ -8,6 +8,18 @@ CORS(app)
 
 DATA_FILE = 'data.json'
 
+def compute_rating_stats(reviews):
+    """
+    reviews: list các dict có key 'rating'
+    Trả về (avg, count), avg là float làm tròn 1 chữ số thập phân, count là int
+    """
+    count = len(reviews or [])
+    if count == 0:
+        return 0.0, 0
+    total = sum(r['rating'] for r in reviews)
+    avg = round(total / count, 1)
+    return avg, count
+
 def load_data():
     full_path = os.path.abspath(DATA_FILE)
     print(f"📂 Flask đang sử dụng file data.json tại: {full_path}")
@@ -35,6 +47,12 @@ def get_products():
         key = keyword.lower()
         products = [p for p in products if key in p.get('name', '').lower()]
 
+        # --- sau filter products nhưng trước return --
+    for p in products:
+        avg, cnt = compute_rating_stats(p.get('reviews'))
+        p['averageRating'] = avg
+        p['reviewCount']   = cnt
+
     return jsonify(products)
 
 
@@ -48,7 +66,7 @@ def add_product():
 
     # Bổ sung khởi tạo mảng reviews
     new_product['reviews'] = []
-
+    new_product['discount'] = new_product.get('discount', 0)
     # Những trường khác như image_url, categories, description,… giữ nguyên
     data['products'].append(new_product)
     save_data(data)
@@ -63,6 +81,9 @@ def update_product(pid):
     update = request.get_json()
     for p in data['products']:
         if p['id'] == pid:
+            if 'discount' in update:
+                d = int(update['discount'])
+                p['discount'] = max(0, min(100, d))
             if 'image_url' in update:
                 p['image_url'] = update['image_url']
             p['categories'] = update.get('categories', [])
@@ -83,6 +104,10 @@ def get_product(pid):
     data = load_data()
     for p in data['products']:
         if p['id'] == pid:
+            # --- thêm thống kê trước khi trả về ---
+            avg, cnt = compute_rating_stats(p.get('reviews'))
+            p['averageRating'] = avg
+            p['reviewCount']   = cnt
             return jsonify(p)
     return jsonify({'error': 'Not found'}), 404
 
@@ -96,17 +121,28 @@ def create_order():
     data = load_data()
     new_order = request.get_json()
 
-    # Gán ID và created_at (nếu chưa có)
+    # 1) Gán ID và timestamp
     new_order['id'] = len(data['orders']) + 1
     new_order['created_at'] = new_order.get('created_at', datetime.now().isoformat())
 
-    # Nếu payload không có phí ship riêng, có thể gán mặc định
+    # 2) Gán phí ship mặc định nếu thiếu
     if 'shippingFee' not in new_order:
         new_order['shippingFee'] = 30000
 
+    # 3) Lưu đơn hàng
     data['orders'].append(new_order)
+
+    # 4) Giảm tồn kho: với mỗi item trong đơn, tìm product và trừ quantity
+    for item in new_order.get('items', []):
+        prod = next((p for p in data['products'] if p['id'] == item['id']), None)
+        if prod:
+            qty = item.get('quantity', 1)
+            prod['stock'] = max(0, prod.get('stock', 0) - qty)
+
+    # 5) Ghi file data.json chỉ một lần
     save_data(data)
-    return jsonify({'message': 'Đơn hàng đã được lưu'}), 200
+
+    return jsonify({'message': 'Đơn hàng đã được lưu và stock đã được cập nhật'}), 200
 @app.route('/api/products/<int:pid>/reviews', methods=['GET'])
 def get_reviews(pid):
     """
@@ -167,7 +203,8 @@ def post_review(pid):
     has_purchased = False
     for order in orders:
         # So sánh lowercase để tránh case-sensitivity
-        if order.get('customer', '').lower() == email:
+        const_email = (order.get('customer') or order.get('customerEmail') or '').lower()
+        if const_email == email:
             for item in order.get('items', []):
                 if item.get('id') == pid:
                     has_purchased = True
@@ -193,6 +230,15 @@ def post_review(pid):
     # B4: Ghi lại data.json
     save_data(data)
     return jsonify({'message': 'Review added successfully.', 'review': new_review}), 201
+
+@app.route('/api/products/<int:pid>/rating-summary', methods=['GET'])
+def get_rating_summary(pid):
+    data = load_data()
+    prod = next((p for p in data['products'] if p['id']==pid), None)
+    if not prod:
+        return jsonify({'error':'Not found'}), 404
+    avg, cnt = compute_rating_stats(prod.get('reviews'))
+    return jsonify({'averageRating': avg, 'reviewCount': cnt}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
